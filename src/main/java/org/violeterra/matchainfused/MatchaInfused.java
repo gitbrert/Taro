@@ -5,6 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -28,5 +29,6 @@ public class MatchaInfused {
 
     public MatchaInfused(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
+        NeoForge.EVENT_BUS.register(new HealthHandler());
     }
 }

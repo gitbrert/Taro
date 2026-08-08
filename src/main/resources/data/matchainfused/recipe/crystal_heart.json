@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:diamond_block",
+    "s": "minecraft:turtle_scute"
+  },
+  "pattern": [
+    "#s#",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "matchainfused:crystal_heart"
+  }
+}

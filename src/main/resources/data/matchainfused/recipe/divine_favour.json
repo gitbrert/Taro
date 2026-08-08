@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": "matchainfused:divine_fragment"
+    "#": {
+      "item": "matchainfused:divine_fragment"
+    }
   },
   "pattern": [
     "###",

@@ -3,11 +3,11 @@
   "category": "misc",
   "key": {
     "#": "minecraft:diamond_block",
-    "s": "minecraft:turtle_scute"
+    "f": "matchainfused:divine_fragment"
   },
   "pattern": [
-    "#s#",
-    " # "
+    "#f#",
+    " f "
   ],
   "result": {
     "count": 1,

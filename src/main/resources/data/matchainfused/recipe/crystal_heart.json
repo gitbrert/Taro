@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": "minecraft:diamond_block",
-    "f": "matchainfused:divine_fragment"
+    "#": {
+      "item": "minecraft:diamond_block"
+    },
+    "f": {
+      "item": "matchainfused:divine_fragment"
+    }
   },
   "pattern": [
     "#f#",

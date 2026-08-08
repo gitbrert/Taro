@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "matchainfused:divine_favour"
+    {
+      "item": "matchainfused:divine_favour"
+    }
   ],
   "result": {
     "count": 9,

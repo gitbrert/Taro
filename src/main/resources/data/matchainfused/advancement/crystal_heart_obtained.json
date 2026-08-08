@@ -1,0 +1,22 @@
+{
+  "criteria": {
+    "obtained_crystal_heart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "matchainfused:crystal_heart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "obtained_crystal_heart"
+    ]
+  ],
+  "rewards": {
+    "function": "matchainfused:consume_crystal_heart"
+  }
+}

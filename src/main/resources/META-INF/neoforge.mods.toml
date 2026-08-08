@@ -12,7 +12,7 @@ description='''A NeoForge 1.21.1 recreation of the Matcha Infused feature subset
 [[dependencies.matchainfused]]
 modId="neoforge"
 type="required"
-versionRange="[21.1.244,)"
+versionRange="[21.1.235,)"
 ordering="NONE"
 side="BOTH"
 

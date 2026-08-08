@@ -7,7 +7,7 @@
   },
   "pattern": [
     "#f#",
-    " f "
+    "# #"
   ],
   "result": {
     "count": 1,

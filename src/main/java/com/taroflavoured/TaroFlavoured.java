@@ -27,12 +27,6 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () ->
             new Item(new Item.Properties()));
 
-    public static final DeferredItem<Item> RAW_ESTUS = ITEMS.register("raw_estus", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> ESTUS_ASH = ITEMS.register("estus_ash", () ->
-            new Item(new Item.Properties()));
-
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
         NeoForge.EVENT_BUS.register(new HealthHandler());

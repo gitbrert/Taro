@@ -3,20 +3,20 @@ loaderVersion="[1,)"
 license="All Rights Reserved"
 
 [[mods]]
-modId="matchainfused"
+modId="taroflavoured"
 version="0.1.0-1.21.1"
-displayName="Matcha Infused"
-authors="Violeterra / Matcha Flavoured"
-description='''A NeoForge 1.21.1 recreation of the Matcha Infused feature subset.'''
+displayName="Taro Flavoured"
+authors="Taro Flavoured"
+description='''A NeoForge 1.21.1 mod implementing the selected Taro Flavoured feature set.'''
 
-[[dependencies.matchainfused]]
+[[dependencies.taroflavoured]]
 modId="neoforge"
 type="required"
 versionRange="[21.1.235,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.matchainfused]]
+[[dependencies.taroflavoured]]
 modId="minecraft"
 type="required"
 versionRange="[1.21.1]"

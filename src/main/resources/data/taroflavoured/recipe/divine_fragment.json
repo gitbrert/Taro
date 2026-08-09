@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "taroflavoured:divine_favour"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "taroflavoured:divine_fragment"
+  }
+}

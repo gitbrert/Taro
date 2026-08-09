@@ -1,7 +1,5 @@
-# Taro / Matcha Infused
+# Taro Flavoured
 
-NeoForge 1.21.1 recreation of the small Matcha Infused feature subset.
+NeoForge 1.21.1 recreation of the selected feature set for the Taro Flavoured mod.
 
-Pass 1 registers Divine Fragment, Divine Favour, and Crystal Heart.
-
-Pass 1 CI test.
+The initial scoped feature set includes Divine Fragment, Divine Favour, and Crystal Heart.

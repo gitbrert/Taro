@@ -1,5 +1,7 @@
 {
   "item.matchainfused.divine_fragment": "Divine Fragment",
   "item.matchainfused.divine_favour": "Divine Favour",
-  "item.matchainfused.crystal_heart": "Crystal Heart"
+  "item.matchainfused.crystal_heart": "Crystal Heart",
+  "item.matchainfused.raw_estus": "Raw Estus",
+  "item.matchainfused.estus_ash": "Estus Ash"
 }

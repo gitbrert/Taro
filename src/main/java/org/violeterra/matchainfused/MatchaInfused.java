@@ -1,4 +1,4 @@
-package org.violeterra.matchainfused;
+package com.taroflavoured;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
@@ -9,9 +9,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod(MatchaInfused.MOD_ID)
-public class MatchaInfused {
-    public static final String MOD_ID = "matchainfused";
+@Mod(TaroFlavoured.MOD_ID)
+public class TaroFlavoured {
+    public static final String MOD_ID = "taroflavoured";
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () ->
@@ -27,13 +27,7 @@ public class MatchaInfused {
     public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () ->
             new Item(new Item.Properties()));
 
-    public static final DeferredItem<Item> RAW_ESTUS = ITEMS.register("raw_estus", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> ESTUS_ASH = ITEMS.register("estus_ash", () ->
-            new Item(new Item.Properties()));
-
-    public MatchaInfused(IEventBus modEventBus) {
+    public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
         NeoForge.EVENT_BUS.register(new HealthHandler());
     }

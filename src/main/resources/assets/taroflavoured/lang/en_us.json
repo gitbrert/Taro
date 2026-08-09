@@ -1,5 +1,7 @@
 {
   "item.taroflavoured.divine_fragment": "Divine Fragment",
   "item.taroflavoured.divine_favour": "Divine Favour",
-  "item.taroflavoured.crystal_heart": "Crystal Heart"
+  "item.taroflavoured.crystal_heart": "Crystal Heart",
+  "item.taroflavoured.raw_estus": "Raw Estus",
+  "item.taroflavoured.estus_ash": "Estus Ash"
 }

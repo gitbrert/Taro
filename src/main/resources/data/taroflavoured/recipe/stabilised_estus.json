@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RBR",
+    "RPR",
+    "RRR"
+  ],
+  "key": {
+    "R": {"item": "taroflavoured:raw_estus"},
+    "B": {"item": "taroflavoured:benzene"},
+    "P": {"item": "minecraft:ender_pearl"}
+  },
+  "result": {
+    "id": "taroflavoured:stabilised_estus",
+    "count": 1
+  }
+}

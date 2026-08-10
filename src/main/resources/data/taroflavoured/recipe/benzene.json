@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "minecraft:gunpowder"},
+    {"item": "minecraft:nether_wart"},
+    {"item": "minecraft:nether_wart"},
+    {"item": "minecraft:nether_wart"},
+    {"item": "minecraft:glass_bottle"}
+  ],
+  "result": {
+    "id": "taroflavoured:benzene",
+    "count": 1
+  }
+}

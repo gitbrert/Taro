@@ -1,0 +1,89 @@
+name: Clean Reference Processing Recipes
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Remove excluded processing recipes and related advancements
+        shell: python
+        run: |
+          import json
+          import pathlib
+          import re
+
+          root = pathlib.Path("reference")
+          if not root.exists():
+              raise SystemExit("reference/ does not exist")
+
+          excluded_types = {
+              "minecraft:stonecutting",
+              "minecraft:blasting",
+              "minecraft:smoking",
+              "minecraft:smelting",
+          }
+
+          recipe_ids = set()
+          deleted_recipes = []
+
+          for path in root.rglob("*.json"):
+              parts = path.parts
+              if "recipe" not in parts:
+                  continue
+              try:
+                  data = json.loads(path.read_text(encoding="utf-8-sig"))
+              except Exception:
+                  continue
+              if data.get("type") not in excluded_types:
+                  continue
+
+              try:
+                  data_index = parts.index("data")
+                  recipe_index = parts.index("recipe")
+                  namespace = parts[data_index + 1]
+                  name = path.stem
+                  recipe_ids.add(f"{namespace}:{name}")
+              except (ValueError, IndexError):
+                  pass
+
+              path.unlink()
+              deleted_recipes.append(str(path))
+
+          deleted_advancements = []
+          if recipe_ids:
+              for path in root.rglob("*.json"):
+                  parts = path.parts
+                  if "advancement" not in parts:
+                      continue
+                  try:
+                      text = path.read_text(encoding="utf-8-sig")
+                  except Exception:
+                      continue
+                  if any(re.search(rf"(?<![\w:]){re.escape(recipe_id)}(?![\w:])", text) for recipe_id in recipe_ids):
+                      path.unlink()
+                      deleted_advancements.append(str(path))
+
+          print(f"Deleted {len(deleted_recipes)} processing recipes.")
+          print(f"Deleted {len(deleted_advancements)} related advancements.")
+
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "Reference already clean."
+            exit 0
+          fi
+          git add -A reference
+          git commit -m "Remove excluded processing recipes from reference"
+          git push

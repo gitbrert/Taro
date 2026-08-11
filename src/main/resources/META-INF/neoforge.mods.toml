@@ -9,6 +9,9 @@ displayName="Taro Flavoured"
 authors="Taro Flavoured"
 description='''A NeoForge 1.21.1 mod implementing the selected Taro Flavoured feature set.'''
 
+[[mixins]]
+config="taroflavoured.mixins.json"
+
 [[dependencies.taroflavoured]]
 modId="neoforge"
 type="required"

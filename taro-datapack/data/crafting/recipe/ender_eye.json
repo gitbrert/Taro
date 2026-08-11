@@ -2,8 +2,8 @@
 	"type": "minecraft:crafting_shapeless",
 	"category": "misc",
 	"ingredients": [
-		"minecraft:blaze_rod",
-		"minecraft:turtle_scute"
+		"taroflavoured:stabilised_estus",
+		"taroflavoured:divine_fragment"
 	],
 	"result": {
 		"count": 16,

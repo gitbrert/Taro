@@ -39,5 +39,6 @@ public class TaroFlavoured {
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
         NeoForge.EVENT_BUS.register(new HealthHandler());
+        NeoForge.EVENT_BUS.register(new BrewingHandler());
     }
 }

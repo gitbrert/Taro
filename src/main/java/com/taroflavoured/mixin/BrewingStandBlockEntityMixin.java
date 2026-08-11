@@ -37,21 +37,21 @@ public abstract class BrewingStandBlockEntityMixin {
     }
 
     @Inject(method = "canPlaceItem", at = @At("HEAD"), cancellable = true)
-    private void taroFlavoured$allowRawEstus(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (slot == 4 && stack.is(TaroFlavoured.RAW_ESTUS.get())) {
-            cir.setReturnValue(true);
+    private void taroFlavoured$replaceFuelItem(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        if (slot == 4) {
+            cir.setReturnValue(stack.is(TaroFlavoured.RAW_ESTUS.get()));
         }
     }
 
     @Inject(method = "canPlaceItemThroughFace", at = @At("HEAD"), cancellable = true)
-    private void taroFlavoured$allowRawEstusThroughFace(
+    private void taroFlavoured$replaceFuelItemThroughFace(
             int slot,
             ItemStack stack,
             Direction direction,
             CallbackInfoReturnable<Boolean> cir
     ) {
-        if (slot == 4 && stack.is(TaroFlavoured.RAW_ESTUS.get())) {
-            cir.setReturnValue(true);
+        if (slot == 4) {
+            cir.setReturnValue(stack.is(TaroFlavoured.RAW_ESTUS.get()));
         }
     }
 }

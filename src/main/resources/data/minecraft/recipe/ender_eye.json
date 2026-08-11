@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "taroflavoured:stabilised_estus",
-    "taroflavoured:divine_fragment"
+    {"item": "taroflavoured:stabilised_estus"},
+    {"item": "taroflavoured:divine_fragment"}
   ],
   "result": {
     "count": 16,

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.taroflavoured.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BrewingStandBlockEntityMixin",
+    "BrewingStandFuelSlotMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

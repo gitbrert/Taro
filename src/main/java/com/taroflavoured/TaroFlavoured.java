@@ -27,9 +27,6 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () ->
             new Item(new Item.Properties()));
 
-    public static final DeferredItem<Item> RAW_ESTUS = ITEMS.register("raw_estus", () ->
-            new Item(new Item.Properties()));
-
     public static final DeferredItem<Item> BENZENE = ITEMS.register("benzene", () ->
             new Item(new Item.Properties()));
 

@@ -1,0 +1,1 @@
+The Favour crafting GUI texture is stored in this directory.

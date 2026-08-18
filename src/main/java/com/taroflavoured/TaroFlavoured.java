@@ -1,11 +1,15 @@
 package com.taroflavoured;
 
+import net.minecraft.core.Registries;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -13,6 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class TaroFlavoured {
     public static final String MOD_ID = "taroflavoured";
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, MOD_ID);
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () ->
             new Item(new Item.Properties()
@@ -32,6 +37,9 @@ public class TaroFlavoured {
 
     public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () ->
             new Item(new Item.Properties()));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
+            "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
 
     // Phase 2b Favours
     public static final DeferredItem<Item> FAVOUR_DIABOBA = ITEMS.register("favour_diaboba", () -> new Item(new Item.Properties()));
@@ -59,6 +67,7 @@ public class TaroFlavoured {
 
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
+        MENUS.register(modEventBus);
         NeoForge.EVENT_BUS.register(new HealthHandler());
     }
 }

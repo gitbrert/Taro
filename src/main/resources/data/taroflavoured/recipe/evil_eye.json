@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EBE",
+    "EPE",
+    "EEE"
+  ],
+  "key": {
+    "E": "minecraft:glowstone_dust",
+    "B": "taroflavoured:benzene",
+    "P": "minecraft:ender_pearl"
+  },
+  "result": {
+    "id": "taroflavoured:evil_eye",
+    "count": 1
+  }
+}

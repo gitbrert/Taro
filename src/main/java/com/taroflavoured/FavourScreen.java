@@ -7,8 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class FavourScreen extends AbstractContainerScreen<FavourMenu> {
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+            TaroFlavoured.MOD_ID, "textures/gui/enchanting_table.png");
     private static final ResourceLocation VANILLA_GUI = ResourceLocation.withDefaultNamespace(
             "textures/gui/container/enchanting_table.png");
+    private static final ResourceLocation RECIPE_BOOK_BUTTON = ResourceLocation.withDefaultNamespace(
+            "recipe_book/button");
 
     public FavourScreen(FavourMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -20,40 +24,26 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(VANILLA_GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        // The supplied 256x256 texture contains a 176x166 GUI in its upper-left corner.
+        guiGraphics.blit(GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
-        // Reuse the vanilla enchanting-table panel and remold its upper area into an anvil-style layout.
-        guiGraphics.fill(leftPos + 5, topPos + 7, leftPos + 171, topPos + 82, 0xFFC6C6C6);
+        // Use the vanilla recipe-book button sprite in the empty area above the book slots.
+        guiGraphics.blitSprite(RECIPE_BOOK_BUTTON, leftPos + 14, topPos + 17, 20, 18);
 
-        drawArrow(guiGraphics, leftPos + 66, topPos + 30);
-        drawVanillaSlot(guiGraphics, 18, 22);
-        drawVanillaSlot(guiGraphics, 137, 22);
-
+        // The custom texture supplies the book/inventory slot backgrounds. The ingredient area is
+        // intentionally just a dark panel, so use vanilla slot frames for the active ingredient slots.
         int ingredients = menu.getActiveIngredientCount();
         for (int i = 0; i < ingredients; i++) {
-            drawVanillaSlot(guiGraphics, 18 + i * 20, 52);
+            drawVanillaSlot(guiGraphics, 66 + i * 20, 35);
         }
     }
 
     private void drawVanillaSlot(GuiGraphics guiGraphics, int x, int y) {
-        guiGraphics.blit(VANILLA_GUI, leftPos + x, topPos + y, 14, 46, 18, 18);
-    }
-
-    private void drawArrow(GuiGraphics guiGraphics, int x, int y) {
-        int dark = 0xFF4A4A4A;
-        int light = 0xFFBEBEBE;
-
-        guiGraphics.fill(x, y, x + 42, y + 2, light);
-        guiGraphics.fill(x, y + 2, x + 42, y + 4, dark);
-
-        for (int i = 0; i < 7; i++) {
-            guiGraphics.fill(x + 42 - i, y + 1 - i, x + 44 - i, y + 3 + i, dark);
-        }
+        guiGraphics.blit(VANILLA_GUI, leftPos + x, topPos + y, 14, 46, 18, 18, 256, 166);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
-        guiGraphics.drawString(font, Component.literal("Tier " + menu.getTier()), 112, 68, 0x404040, false);
+        // The supplied texture has its own framing and intentionally has no title/tier text.
     }
 }

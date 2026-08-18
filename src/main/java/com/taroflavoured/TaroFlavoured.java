@@ -33,29 +33,29 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () ->
             new Item(new Item.Properties()));
 
-    // Phase 2b Blessings
-    public static final DeferredItem<Item> BLESSING_DIABOBA = ITEMS.register("blessing_diaboba", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_MARZANNA = ITEMS.register("blessing_marzanna", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_SIEGFRIED = ITEMS.register("blessing_siegfried", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_MELUSINE = ITEMS.register("blessing_melusine", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_ANKOU = ITEMS.register("blessing_ankou", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_ENKIDU = ITEMS.register("blessing_enkidu", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_ILLAPA = ITEMS.register("blessing_illapa", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_SON_TINH = ITEMS.register("blessing_son_tinh", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_WAYRA = ITEMS.register("blessing_wayra", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_HOU_YI = ITEMS.register("blessing_hou_yi", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_AH_PUCH = ITEMS.register("blessing_ah_puch", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_JUMONG = ITEMS.register("blessing_jumong", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_AISHA = ITEMS.register("blessing_aisha", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_MARGOT = ITEMS.register("blessing_margot", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_AMARU = ITEMS.register("blessing_amaru", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_THUY_TINH = ITEMS.register("blessing_thuy_tinh", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_SAMJOK_O = ITEMS.register("blessing_samjok_o", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_BUDAI = ITEMS.register("blessing_budai", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_COSANZEANA = ITEMS.register("blessing_cosanzeana", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_LUG = ITEMS.register("blessing_lug", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_ROSA_DE_LIMA = ITEMS.register("blessing_rosa_de_lima", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BLESSING_SIDI_AMAR_BOUSSENA = ITEMS.register("blessing_sidi_amar_boussena", () -> new Item(new Item.Properties()));
+    // Phase 2b Favours
+    public static final DeferredItem<Item> FAVOUR_DIABOBA = ITEMS.register("favour_diaboba", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_MARZANNA = ITEMS.register("favour_marzanna", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_SIEGFRIED = ITEMS.register("favour_siegfried", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_MELUSINE = ITEMS.register("favour_melusine", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_ANKOU = ITEMS.register("favour_ankou", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_ENKIDU = ITEMS.register("favour_enkidu", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_ILLAPA = ITEMS.register("favour_illapa", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_SON_TINH = ITEMS.register("favour_son_tinh", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_WAYRA = ITEMS.register("favour_wayra", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_HOU_YI = ITEMS.register("favour_hou_yi", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_AH_PUCH = ITEMS.register("favour_ah_puch", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_JUMONG = ITEMS.register("favour_jumong", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_AISHA = ITEMS.register("favour_aisha", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_MARGOT = ITEMS.register("favour_margot", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_AMARU = ITEMS.register("favour_amaru", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_THUY_TINH = ITEMS.register("favour_thuy_tinh", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_SAMJOK_O = ITEMS.register("favour_samjok_o", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_BUDAI = ITEMS.register("favour_budai", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_COSANZEANA = ITEMS.register("favour_cosanzeana", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_LUG = ITEMS.register("favour_lug", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_ROSA_DE_LIMA = ITEMS.register("favour_rosa_de_lima", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FAVOUR_SIDI_AMAR_BOUSSENA = ITEMS.register("favour_sidi_amar_boussena", () -> new Item(new Item.Properties()));
 
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    "minecraft:blaze_rod"
+    { "item": "minecraft:blaze_rod" }
   ],
   "result": {
     "id": "minecraft:blaze_powder",

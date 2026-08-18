@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "taroflavoured:evil_eye",
-    "taroflavoured:divine_fragment"
+    { "item": "taroflavoured:evil_eye" },
+    { "item": "taroflavoured:divine_fragment" }
   ],
   "result": {
     "count": 16,

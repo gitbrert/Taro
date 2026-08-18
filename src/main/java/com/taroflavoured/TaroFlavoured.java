@@ -19,7 +19,7 @@ public class TaroFlavoured {
                     .rarity(Rarity.RARE)
                     .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
 
-    public static final DeferredItem<Item> DIVINE_FAVOUR = ITEMS.register("divine_favour", () ->
+    public static final DeferredItem<Item> DIVINE_CRYSTAL = ITEMS.register("divine_crystal", () ->
             new Item(new Item.Properties()
                     .rarity(Rarity.RARE)
                     .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "taroflavoured:item/divine_favour"
+    "layer0": "taroflavoured:item/divine_crystal"
   }
 }

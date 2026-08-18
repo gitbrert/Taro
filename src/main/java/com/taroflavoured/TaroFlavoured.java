@@ -1,7 +1,6 @@
 package com.taroflavoured;
 
-import net.minecraft.core.Registries;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.DataComponents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -12,6 +11,7 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.Registries;
 
 @Mod(TaroFlavoured.MOD_ID)
 public class TaroFlavoured {

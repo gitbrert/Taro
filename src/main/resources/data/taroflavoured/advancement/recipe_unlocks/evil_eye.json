@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blaze_powder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": "minecraft:blaze_powder" }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "taroflavoured:evil_eye"
+    ]
+  }
+}

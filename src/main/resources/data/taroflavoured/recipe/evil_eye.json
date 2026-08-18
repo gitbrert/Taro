@@ -6,7 +6,7 @@
     "EEE"
   ],
   "key": {
-    "E": { "item": "minecraft:glowstone_dust" },
+    "E": { "item": "minecraft:blaze_powder" },
     "B": { "item": "taroflavoured:benzene" },
     "P": { "item": "minecraft:ender_pearl" }
   },

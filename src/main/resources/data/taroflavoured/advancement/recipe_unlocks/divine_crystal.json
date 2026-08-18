@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_divine_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": "taroflavoured:divine_fragment" }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "taroflavoured:divine_crystal"
+    ]
+  }
+}

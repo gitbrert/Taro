@@ -7,9 +7,9 @@
     "b"
   ],
   "key": {
-    "B": "minecraft:book",
-    "E": "taroflavoured:evil_eye",
-    "b": "taroflavoured:benzene"
+    "B": { "item": "minecraft:book" },
+    "E": { "item": "taroflavoured:evil_eye" },
+    "b": { "item": "taroflavoured:benzene" }
   },
   "result": {
     "components": {

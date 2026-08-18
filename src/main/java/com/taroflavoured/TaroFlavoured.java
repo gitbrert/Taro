@@ -1,6 +1,6 @@
 package com.taroflavoured;
 
-import net.minecraft.core.DataComponents;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;

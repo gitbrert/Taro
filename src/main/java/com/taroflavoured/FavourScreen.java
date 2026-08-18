@@ -11,7 +11,9 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> {
             "textures/gui/container/enchanting_table.png");
 
     public FavourScreen(FavourMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 176, 166);
+        super(menu, inventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 166;
         this.titleLabelX = 8;
         this.inventoryLabelX = 8;
     }

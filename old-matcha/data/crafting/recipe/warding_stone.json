@@ -2,9 +2,9 @@
 	"type": "minecraft:crafting_shaped",
 	"category": "equipment",
 	"key": {
-		"#": "minecraft:glistering_melon_slice",
+		"#": "matcha:nazar",
 		"S": "minecraft:chiseled_stone_bricks",
-		"E": "minecraft:blaze_rod"
+		"E": "matcha:evil_eye"
 	},
 	"pattern": [
 		"S#S",
@@ -31,6 +31,6 @@
 			"minecraft:item_model": "minecraft:warding_stone"
 		},
 		"count": 1,
-		"id": "minecraft:chicken_spawn_egg"
+		"id": "matcha:warding_stone"
 	}
 }

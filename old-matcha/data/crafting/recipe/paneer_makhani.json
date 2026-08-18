@@ -2,12 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": "minecraft:cookie",
-    "E": "minecraft:glowstone_dust",
-    "T": "minecraft:beetroot",
+    "P": "matcha:cheese",
+    "E": "minecraft:blaze_powder",
+    "T": "matcha:tomatoes",
     "S": "minecraft:sugar",
     "B": "minecraft:bowl",
-    "M": "minecraft:beetroot_soup"
+    "M": "matcha:milk_bottle"
   },
   "pattern": [
     "EMS",
@@ -67,6 +67,6 @@
       ]
     },
     "count": 1,
-    "id": "minecraft:rabbit_stew"
+    "id": "matcha:paneer_makhani"
   }
 }

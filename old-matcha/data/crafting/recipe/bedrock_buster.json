@@ -2,7 +2,7 @@
 	"type": "minecraft:crafting_shaped",
 	"category": "redstone",
 	"key": {
-		"#": "minecraft:turtle_scute",
+		"#": "matcha:divine_fragment",
 		"X": "minecraft:tnt"
 	},
 	"pattern": [
@@ -11,7 +11,7 @@
 		"XXX"
 	],
 	"result": {
-		"id": "minecraft:chicken_spawn_egg",
+		"id": "minecraft:bedrock_buster",
 		"components": {
 			"minecraft:entity_data": {
 				"id": "minecraft:tnt",

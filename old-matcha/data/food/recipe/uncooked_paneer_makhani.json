@@ -4,13 +4,13 @@
 	"ingredients": [
 		"minecraft:glowstone_dust",
 		"minecraft:sugar",
-		"minecraft:beetroot_soup",
-		"minecraft:beetroot",
-		"minecraft:cookie",
+		"matcha:milk_bottle",
+		"matcha:tomatoes",
+		"matcha:cheese",
 		"minecraft:bowl"
 	],
 	"result": {
-		"id": "minecraft:zoglin_spawn_egg",
+		"id": "matcha:uncooked_paneer_makhani",
 		"components": {
 			"!minecraft:entity_data": {}
 		}

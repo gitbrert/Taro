@@ -54,6 +54,6 @@
 			"minecraft:item_model": "minecraft:snow_shovel"
 		},
 		"count": 1,
-		"id": "minecraft:iron_shovel"
+		"id": "minecraft:snow_shovel"
 	}
 }

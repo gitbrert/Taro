@@ -4,8 +4,8 @@
 	"category": "equipment",
 	"key": {
 		"X": "minecraft:lapis_lazuli",
-		"W": "white_dye",
-		"E": "minecraft:glowstone_dust"
+		"W": "calcite",
+		"E": "minecraft:blaze_powder"
 	},
 	"pattern": [
 		"EXX",
@@ -19,6 +19,6 @@
 			}
 		},
 		"count": 1,
-		"id": "minecraft:glistering_melon_slice"
+		"id": "matcha:nazar"
 	}
 }

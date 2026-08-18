@@ -2,7 +2,7 @@
 	"type": "minecraft:crafting_shaped",
 	"category": "misc",
 	"key": {
-		"#": "minecraft:turtle_scute"
+		"#": "matcha:divine_fragment"
 	},
 	"pattern": [
 		"###",
@@ -11,6 +11,6 @@
 	],
 	"result": {
 		"count": 1,
-		"id": "minecraft:nether_star"
+		"id": "matcha:divine_favour"
 	}
 }

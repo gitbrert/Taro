@@ -3,7 +3,7 @@
 	"category": "equipment",
 	"key": {
 		"X": "minecraft:stick",
-		"e": "minecraft:glowstone_dust"
+		"e": "matcha:divine_fragment"
 	},
 	"pattern": [
 		" X ",
@@ -11,7 +11,7 @@
 		" X "
 	],
 	"result": {
-		"id": "minecraft:poisonous_potato",
+		"id": "matcha:wooden_cross",
 		"components": {
 			"!minecraft:consumable": {},
 			"minecraft:item_model": "minecraft:wooden_cross",

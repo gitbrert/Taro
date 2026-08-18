@@ -3,8 +3,8 @@
 	"group": "blaze_rod",
 	"category": "misc",
 	"key": {
-		"E": "minecraft:glowstone_dust",
-		"B": "minecraft:endermite_spawn_egg",
+		"E": "minecraft:blaze_powder",
+		"B": "matcha:benzene",
 		"P": "minecraft:ender_pearl"
 	},
 	"pattern": [
@@ -18,6 +18,6 @@
 			"minecraft:rarity": "uncommon"
 		},
 		"count": 1,
-		"id": "minecraft:blaze_rod"
+		"id": "matcha:evil_eye"
 	}
 }

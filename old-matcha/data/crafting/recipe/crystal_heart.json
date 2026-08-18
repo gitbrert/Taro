@@ -2,13 +2,12 @@
 	"type": "minecraft:crafting_shaped",
 	"category": "misc",
 	"key": {
-		"d": "minecraft:diamond",
-		"s": "minecraft:turtle_scute"
+		"d": "matcha:diamond_block",
+		"s": "matcha:divine_favour"
 	},
 	"pattern": [
-		"ddd",
 		"dsd",
-		"ddd"
+		" d "
 	],
 	"result": {
 		"components": {
@@ -21,6 +20,6 @@
 			"!minecraft:consumable": {}
 		},
 		"count": 1,
-		"id": "minecraft:poisonous_potato"
+		"id": "matcha:crystal_heart"
 	}
 }

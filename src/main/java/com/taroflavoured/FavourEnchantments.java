@@ -1,7 +1,7 @@
 package com.taroflavoured;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistryLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +16,7 @@ public final class FavourEnchantments {
 
     public static ItemStack apply(ItemStack favour, RegistryAccess registryAccess) {
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        RegistryLookup<Enchantment> registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+        HolderLookup.RegistryLookup<Enchantment> registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
         if (favour.is(TaroFlavoured.FAVOUR_DIABOBA.get())) {
             add(enchantments, registry, "minecraft:bane_of_arthropods", 5);
@@ -60,8 +60,6 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:sharpness", 5);
             add(enchantments, registry, "minecraft:thorns", 3);
         } else if (favour.is(TaroFlavoured.FAVOUR_MARGOT.get())) {
-            // The current guide calls this enchantment "Sway". The previous reference
-            // guide called it "Zephyr"; no current Sway enchantment ID is defined in Taro.
             add(enchantments, registry, "main:zephyr", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_AMARU.get())) {
             add(enchantments, registry, "minecraft:density", 5);
@@ -94,7 +92,7 @@ public final class FavourEnchantments {
         return favour;
     }
 
-    private static void add(ItemEnchantments.Mutable enchantments, RegistryLookup<Enchantment> registry, String id, int level) {
+    private static void add(ItemEnchantments.Mutable enchantments, HolderLookup.RegistryLookup<Enchantment> registry, String id, int level) {
         ResourceKey<Enchantment> key = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.parse(id));
         registry.get(key).ifPresent(holder -> enchantments.set(holder, level));
     }

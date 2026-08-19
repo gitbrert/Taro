@@ -76,7 +76,7 @@ public class TaroFlavoured {
 
     private static ItemEnchantments bindingCurseEnchantments() {
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(BuiltInRegistries.ENCHANTMENT.getHolderOrThrow(Enchantments.BINDING_CURSE), 1);
+        enchantments.set(BuiltInRegistries.ENCHANTMENTS.getHolderOrThrow(Enchantments.BINDING_CURSE), 1);
         return enchantments.toImmutable();
     }
 

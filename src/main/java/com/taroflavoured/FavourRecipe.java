@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * A recipe for the custom enchanting-table interface.
  *
- * Book + no ingredients -> Envious Book (Tier 0)
+ * Book + benzene + evil eye -> Envious Book (Tier 0)
  * Envious Book + favour ingredients -> Favour
  */
 public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
@@ -58,9 +58,13 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
     }
 
     public static FavourRecipe find(int tier, ItemStack input, List<ItemStack> ingredients) {
-        // Envious Book creation is a Tier 0 recipe and does not require ingredients.
-        if (input.is(net.minecraft.world.item.Items.BOOK) && ingredients.stream().allMatch(ItemStack::isEmpty)) {
-            return new FavourRecipe(0, new String[0], ItemStack.EMPTY);
+        // Tier 0: Book + exactly one Benzene and one Evil Eye -> Envious Book.
+        if (input.is(net.minecraft.world.item.Items.BOOK)
+                && ingredients.size() >= 2
+                && ingredients.get(0).is(TaroFlavoured.BENZENE.get())
+                && ingredients.get(1).is(TaroFlavoured.EVIL_EYE.get())
+                && ingredients.subList(2, ingredients.size()).stream().allMatch(ItemStack::isEmpty)) {
+            return new FavourRecipe(0, new String[]{"taroflavoured:benzene", "taroflavoured:evil_eye"}, ItemStack.EMPTY);
         }
 
         for (FavourRecipe recipe : RECIPES) {

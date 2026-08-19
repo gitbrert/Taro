@@ -117,7 +117,7 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
         return new FavourRecipe(tier, new String[]{a, b, c}, new ItemStack(result.get()));
     }
 
-    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) {
+    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) {
         return new FavourRecipe(tier, new String[]{a, b, c, d}, new ItemStack(result.get()));
     }
 

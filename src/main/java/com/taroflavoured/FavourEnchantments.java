@@ -1,7 +1,7 @@
 package com.taroflavoured;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistryLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +16,7 @@ public final class FavourEnchantments {
 
     public static ItemStack apply(ItemStack favour, RegistryAccess registryAccess) {
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        Registry<Enchantment> registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+        RegistryLookup<Enchantment> registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
         if (favour.is(TaroFlavoured.FAVOUR_DIABOBA.get())) {
             add(enchantments, registry, "minecraft:bane_of_arthropods", 5);
@@ -94,8 +94,8 @@ public final class FavourEnchantments {
         return favour;
     }
 
-    private static void add(ItemEnchantments.Mutable enchantments, Registry<Enchantment> registry, String id, int level) {
+    private static void add(ItemEnchantments.Mutable enchantments, RegistryLookup<Enchantment> registry, String id, int level) {
         ResourceKey<Enchantment> key = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.parse(id));
-        registry.getHolder(key).ifPresent(holder -> enchantments.set(holder, level));
+        registry.get(key).ifPresent(holder -> enchantments.set(holder, level));
     }
 }

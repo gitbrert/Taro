@@ -50,11 +50,11 @@ public class FavourMenu extends AbstractContainerMenu {
         container.startOpen(playerInventory.player);
 
         // Match the two book positions in the custom GUI texture.
-        addSlot(new BookInputSlot(container, INPUT_SLOT, 13, 43));
+        addSlot(new BookInputSlot(container, INPUT_SLOT, 14, 44));
         for (int i = 0; i < 5; i++) {
             addSlot(new IngredientSlot(this, container, INGREDIENT_START + i, 66 + i * 20, 35, i));
         }
-        addSlot(new OutputSlot(container, OUTPUT_SLOT, 33, 43));
+        addSlot(new OutputSlot(container, OUTPUT_SLOT, 34, 44));
 
         addPlayerInventory(playerInventory);
         addDataSlots(data);

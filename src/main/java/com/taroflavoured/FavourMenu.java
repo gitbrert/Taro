@@ -49,10 +49,10 @@ public class FavourMenu extends AbstractContainerMenu {
         checkContainerSize(container, CUSTOM_SLOT_COUNT);
         container.startOpen(playerInventory.player);
 
-        // Move the book slots two pixels down to align with the custom GUI texture.
+        // Book input accepts Books and Envious Books; ingredients accept any item.
         addSlot(new BookInputSlot(container, INPUT_SLOT, 15, 47));
         for (int i = 0; i < 5; i++) {
-            addSlot(new IngredientSlot(this, container, INGREDIENT_START + i, 66 + i * 20, 35, i));
+            addSlot(new IngredientSlot(container, INGREDIENT_START + i, 66 + i * 20, 35));
         }
         addSlot(new OutputSlot(container, OUTPUT_SLOT, 35, 47));
 
@@ -184,23 +184,18 @@ public class FavourMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return stack.is(Items.BOOK);
+            return stack.is(Items.BOOK) || TaroFlavoured.isEnviousBook(stack);
         }
     }
 
     private static class IngredientSlot extends Slot {
-        private final FavourMenu menu;
-        private final int ingredientIndex;
-
-        IngredientSlot(FavourMenu menu, Container container, int slot, int x, int y, int ingredientIndex) {
+        IngredientSlot(Container container, int slot, int x, int y) {
             super(container, slot, x, y);
-            this.menu = menu;
-            this.ingredientIndex = ingredientIndex;
         }
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return ingredientIndex < menu.getActiveIngredientCount();
+            return true;
         }
     }
 

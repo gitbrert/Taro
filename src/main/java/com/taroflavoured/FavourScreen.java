@@ -33,4 +33,11 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> {
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         // The supplied texture has its own framing and intentionally has no title/tier text.
     }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        // Explicitly render the hovered slot tooltip after the container contents.
+        renderTooltip(guiGraphics, mouseX, mouseY);
+    }
 }

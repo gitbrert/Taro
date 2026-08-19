@@ -6,6 +6,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -43,7 +45,7 @@ public class TaroFlavoured {
             new Item(new Item.Properties()
                     .stacksTo(1)
                     .rarity(Rarity.UNCOMMON)
-                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
+                    .component(DataComponents.ENCHANTMENTS, bindingCurseEnchantments())));
 
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
             "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
@@ -71,6 +73,12 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> FAVOUR_LUG = ITEMS.register("favour_lug", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_ROSA_DE_LIMA = ITEMS.register("favour_rosa_de_lima", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIDI_AMAR_BOUSSENA = ITEMS.register("favour_sidi_amar_boussena", () -> new Item(new Item.Properties()));
+
+    private static ItemEnchantments bindingCurseEnchantments() {
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(BuiltInRegistries.ENCHANTMENT.getHolderOrThrow(Enchantments.BINDING_CURSE), 1);
+        return enchantments.toImmutable();
+    }
 
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);

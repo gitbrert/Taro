@@ -22,3 +22,10 @@ type="required"
 versionRange="[1.21.1]"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.taroflavoured]]
+modId="mounts_of_mayhem"
+type="required"
+versionRange="[2.1.0,)"
+ordering="AFTER"
+side="BOTH"

@@ -23,23 +23,12 @@ public class TaroFlavoured {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, MOD_ID);
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () ->
-            new Item(new Item.Properties()
-                    .rarity(Rarity.RARE)
-                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
-
+            new Item(new Item.Properties().rarity(Rarity.RARE).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
     public static final DeferredItem<Item> DIVINE_CRYSTAL = ITEMS.register("divine_crystal", () ->
-            new Item(new Item.Properties()
-                    .rarity(Rarity.RARE)
-                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
-
-    public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> BENZENE = ITEMS.register("benzene", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () ->
-            new Item(new Item.Properties()));
+            new Item(new Item.Properties().rarity(Rarity.RARE).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
+    public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BENZENE = ITEMS.register("benzene", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> ENVIOUS_BOOK = ITEMS.register("envious_book", () ->
             new Item(new Item.Properties()
@@ -50,7 +39,6 @@ public class TaroFlavoured {
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
             "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
 
-    // Phase 2b Favours
     public static final DeferredItem<Item> FAVOUR_DIABOBA = ITEMS.register("favour_diaboba", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_MARZANNA = ITEMS.register("favour_marzanna", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIEGFRIED = ITEMS.register("favour_siegfried", () -> new Item(new Item.Properties()));
@@ -76,7 +64,7 @@ public class TaroFlavoured {
 
     private static ItemEnchantments bindingCurseEnchantments() {
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(BuiltInRegistries.ENCHANTMENTS.getHolderOrThrow(Enchantments.BINDING_CURSE), 1);
+        enchantments.set(BuiltInRegistries.ENCHANTMENT.getHolderOrThrow(Enchantments.BINDING_CURSE), 1);
         return enchantments.toImmutable();
     }
 

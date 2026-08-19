@@ -52,7 +52,6 @@ public class FavourMenu extends AbstractContainerMenu {
         checkContainerSize(container, CUSTOM_SLOT_COUNT);
         container.startOpen(playerInventory.player);
 
-        // Book input accepts Books and Envious Books; ingredients accept any item.
         addSlot(new BookInputSlot(container, INPUT_SLOT, 15, 47));
         for (int i = 0; i < 5; i++) {
             addSlot(new IngredientSlot(container, INGREDIENT_START + i, 66 + i * 20, 35));
@@ -93,24 +92,19 @@ public class FavourMenu extends AbstractContainerMenu {
 
     private void updateResult() {
         List<ItemStack> ingredients = new ArrayList<>(5);
-        for (int i = 0; i < 5; i++) {
-            ingredients.add(container.getItem(INGREDIENT_START + i));
-        }
+        for (int i = 0; i < 5; i++) ingredients.add(container.getItem(INGREDIENT_START + i));
 
         ItemStack input = container.getItem(INPUT_SLOT);
         FavourRecipe recipe = FavourRecipe.find(getTier(), input, ingredients);
         ItemStack result = ItemStack.EMPTY;
 
         if (recipe != null) {
+            Level level = accessLevel();
             if (input.is(Items.BOOK)) {
-                // Stage 1: Book + the favour recipe's ingredients -> Envious Book.
-                Level level = accessLevel();
-                if (level != null) {
-                    result = TaroFlavoured.createEnviousBook(level.registryAccess());
-                }
+                if (level != null) result = TaroFlavoured.createEnviousBook(level.registryAccess());
             } else if (TaroFlavoured.isEnviousBook(input)) {
-                // Stage 2: Envious Book + the same ingredients -> the Favour.
                 result = recipe.favour().copy();
+                if (level != null) result = FavourEnchantments.apply(result, level.registryAccess());
             }
         }
 
@@ -126,9 +120,7 @@ public class FavourMenu extends AbstractContainerMenu {
     private void consumeRecipeInputs() {
         container.removeItem(INPUT_SLOT, 1);
         for (int i = 0; i < 5; i++) {
-            if (!container.getItem(INGREDIENT_START + i).isEmpty()) {
-                container.removeItem(INGREDIENT_START + i, 1);
-            }
+            if (!container.getItem(INGREDIENT_START + i).isEmpty()) container.removeItem(INGREDIENT_START + i, 1);
         }
         container.setItem(OUTPUT_SLOT, ItemStack.EMPTY);
     }
@@ -136,10 +128,7 @@ public class FavourMenu extends AbstractContainerMenu {
     private boolean takeResult(Player player) {
         updateResult();
         ItemStack result = container.getItem(OUTPUT_SLOT);
-        if (result.isEmpty()) {
-            return false;
-        }
-
+        if (result.isEmpty()) return false;
         consumeRecipeInputs();
         player.containerMenu.broadcastChanges();
         return true;
@@ -147,26 +136,15 @@ public class FavourMenu extends AbstractContainerMenu {
 
     private static int calculateTier(Level level, BlockPos tablePos) {
         int shelves = 0;
-
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
-                if (Math.max(Math.abs(dx), Math.abs(dz)) != 2) {
-                    continue;
-                }
-
+                if (Math.max(Math.abs(dx), Math.abs(dz)) != 2) continue;
                 for (int dy = 0; dy <= 1; dy++) {
                     BlockPos shelfPos = tablePos.offset(dx, dy, dz);
-                    if (!level.getBlockState(shelfPos).is(Blocks.BOOKSHELF)) {
-                        continue;
-                    }
-
-                    if (isBookshelfPathClear(level, tablePos, dx, dy, dz)) {
-                        shelves++;
-                    }
+                    if (level.getBlockState(shelfPos).is(Blocks.BOOKSHELF) && isBookshelfPathClear(level, tablePos, dx, dy, dz)) shelves++;
                 }
             }
         }
-
         return Math.min(3, shelves / 5);
     }
 
@@ -174,16 +152,11 @@ public class FavourMenu extends AbstractContainerMenu {
         int stepX = Integer.signum(dx);
         int stepZ = Integer.signum(dz);
         BlockPos firstGap = tablePos.offset(stepX, dy, stepZ);
-
-        if (!level.getBlockState(firstGap).isAir()) {
-            return false;
-        }
-
+        if (!level.getBlockState(firstGap).isAir()) return false;
         if (dx != 0 && dz != 0) {
             return level.getBlockState(tablePos.offset(stepX, dy, 0)).isAir()
                     && level.getBlockState(tablePos.offset(0, dy, stepZ)).isAir();
         }
-
         return true;
     }
 
@@ -195,36 +168,20 @@ public class FavourMenu extends AbstractContainerMenu {
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
         Slot slot = slots.get(slotIndex);
-        if (slot == null || !slot.hasItem()) {
-            return ItemStack.EMPTY;
-        }
-
+        if (slot == null || !slot.hasItem()) return ItemStack.EMPTY;
         if (slotIndex == OUTPUT_SLOT) {
             ItemStack result = slot.getItem().copy();
-            if (result.isEmpty() || !moveItemStackTo(result, CUSTOM_SLOT_COUNT, slots.size(), true)) {
-                return ItemStack.EMPTY;
-            }
+            if (result.isEmpty() || !moveItemStackTo(result, CUSTOM_SLOT_COUNT, slots.size(), true)) return ItemStack.EMPTY;
             consumeRecipeInputs();
-            return slot.getItem().copy();
+            return result;
         }
 
         ItemStack source = slot.getItem().copy();
         ItemStack stack = slot.getItem();
-
         if (slotIndex < CUSTOM_SLOT_COUNT) {
-            if (!moveItemStackTo(stack, CUSTOM_SLOT_COUNT, slots.size(), true)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (!moveItemStackTo(stack, 0, CUSTOM_SLOT_COUNT, false)) {
-            return ItemStack.EMPTY;
-        }
-
-        if (stack.isEmpty()) {
-            slot.set(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-
+            if (!moveItemStackTo(stack, CUSTOM_SLOT_COUNT, slots.size(), true)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, 0, CUSTOM_SLOT_COUNT, false)) return ItemStack.EMPTY;
+        if (stack.isEmpty()) slot.set(ItemStack.EMPTY); else slot.setChanged();
         return source;
     }
 
@@ -232,9 +189,7 @@ public class FavourMenu extends AbstractContainerMenu {
     public void removed(Player player) {
         super.removed(player);
         container.stopOpen(player);
-        if (!player.level().isClientSide) {
-            clearContainer(player, container);
-        }
+        if (!player.level().isClientSide) clearContainer(player, container);
     }
 
     @Override
@@ -245,44 +200,19 @@ public class FavourMenu extends AbstractContainerMenu {
     }
 
     private static class BookInputSlot extends Slot {
-        BookInputSlot(Container container, int slot, int x, int y) {
-            super(container, slot, x, y);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return stack.is(Items.BOOK) || TaroFlavoured.isEnviousBook(stack);
-        }
+        BookInputSlot(Container container, int slot, int x, int y) { super(container, slot, x, y); }
+        @Override public boolean mayPlace(ItemStack stack) { return stack.is(Items.BOOK) || TaroFlavoured.isEnviousBook(stack); }
     }
 
     private static class IngredientSlot extends Slot {
-        IngredientSlot(Container container, int slot, int x, int y) {
-            super(container, slot, x, y);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return true;
-        }
+        IngredientSlot(Container container, int slot, int x, int y) { super(container, slot, x, y); }
+        @Override public boolean mayPlace(ItemStack stack) { return true; }
     }
 
     private static class OutputSlot extends Slot {
         private final FavourMenu menu;
-
-        OutputSlot(FavourMenu menu, Container container, int slot, int x, int y) {
-            super(container, slot, x, y);
-            this.menu = menu;
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public void onTake(Player player, ItemStack stack) {
-            menu.takeResult(player);
-            super.onTake(player, stack);
-        }
+        OutputSlot(FavourMenu menu, Container container, int slot, int x, int y) { super(container, slot, x, y); this.menu = menu; }
+        @Override public boolean mayPlace(ItemStack stack) { return false; }
+        @Override public void onTake(Player player, ItemStack stack) { menu.takeResult(player); super.onTake(player, stack); }
     }
 }

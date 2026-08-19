@@ -2,14 +2,10 @@ package com.taroflavoured;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -47,7 +43,7 @@ public class TaroFlavoured {
             new Item(new Item.Properties()
                     .stacksTo(1)
                     .rarity(Rarity.UNCOMMON)
-                    .component(DataComponents.CUSTOM_NAME, Component.translatable("item.taroflavoured.envious_book"))));
+                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
             "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));

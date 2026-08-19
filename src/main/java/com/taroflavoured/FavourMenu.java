@@ -16,6 +16,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FavourMenu extends AbstractContainerMenu {
     public static final int INPUT_SLOT = 0;
     public static final int INGREDIENT_START = 1;
@@ -54,7 +57,7 @@ public class FavourMenu extends AbstractContainerMenu {
         for (int i = 0; i < 5; i++) {
             addSlot(new IngredientSlot(container, INGREDIENT_START + i, 66 + i * 20, 35));
         }
-        addSlot(new OutputSlot(container, OUTPUT_SLOT, 35, 47));
+        addSlot(new OutputSlot(this, container, OUTPUT_SLOT, 35, 47));
 
         addPlayerInventory(playerInventory);
         addDataSlots(data);
@@ -86,6 +89,60 @@ public class FavourMenu extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return blockPos;
+    }
+
+    private void updateResult() {
+        List<ItemStack> ingredients = new ArrayList<>(5);
+        for (int i = 0; i < 5; i++) {
+            ingredients.add(container.getItem(INGREDIENT_START + i));
+        }
+
+        ItemStack input = container.getItem(INPUT_SLOT);
+        FavourRecipe recipe = FavourRecipe.find(getTier(), input, ingredients);
+        ItemStack result = ItemStack.EMPTY;
+
+        if (recipe != null) {
+            if (input.is(Items.BOOK)) {
+                // Stage 1: Book + the favour recipe's ingredients -> Envious Book.
+                Level level = accessLevel();
+                if (level != null) {
+                    result = TaroFlavoured.createEnviousBook(level.registryAccess());
+                }
+            } else if (TaroFlavoured.isEnviousBook(input)) {
+                // Stage 2: Envious Book + the same ingredients -> the Favour.
+                result = recipe.favour().copy();
+            }
+        }
+
+        container.setItem(OUTPUT_SLOT, result);
+    }
+
+    private Level accessLevel() {
+        final Level[] result = new Level[1];
+        access.execute((level, pos) -> result[0] = level);
+        return result[0];
+    }
+
+    private void consumeRecipeInputs() {
+        container.removeItem(INPUT_SLOT, 1);
+        for (int i = 0; i < 5; i++) {
+            if (!container.getItem(INGREDIENT_START + i).isEmpty()) {
+                container.removeItem(INGREDIENT_START + i, 1);
+            }
+        }
+        container.setItem(OUTPUT_SLOT, ItemStack.EMPTY);
+    }
+
+    private boolean takeResult(Player player) {
+        updateResult();
+        ItemStack result = container.getItem(OUTPUT_SLOT);
+        if (result.isEmpty()) {
+            return false;
+        }
+
+        consumeRecipeInputs();
+        player.containerMenu.broadcastChanges();
+        return true;
     }
 
     private static int calculateTier(Level level, BlockPos tablePos) {
@@ -137,26 +194,35 @@ public class FavourMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        ItemStack source = ItemStack.EMPTY;
         Slot slot = slots.get(slotIndex);
+        if (slot == null || !slot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
 
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            source = stack.copy();
-
-            if (slotIndex < CUSTOM_SLOT_COUNT) {
-                if (!moveItemStackTo(stack, CUSTOM_SLOT_COUNT, slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!moveItemStackTo(stack, 0, CUSTOM_SLOT_COUNT, false)) {
+        if (slotIndex == OUTPUT_SLOT) {
+            ItemStack result = slot.getItem().copy();
+            if (result.isEmpty() || !moveItemStackTo(result, CUSTOM_SLOT_COUNT, slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
+            consumeRecipeInputs();
+            return slot.getItem().copy();
+        }
 
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
+        ItemStack source = slot.getItem().copy();
+        ItemStack stack = slot.getItem();
+
+        if (slotIndex < CUSTOM_SLOT_COUNT) {
+            if (!moveItemStackTo(stack, CUSTOM_SLOT_COUNT, slots.size(), true)) {
+                return ItemStack.EMPTY;
             }
+        } else if (!moveItemStackTo(stack, 0, CUSTOM_SLOT_COUNT, false)) {
+            return ItemStack.EMPTY;
+        }
+
+        if (stack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
         }
 
         return source;
@@ -174,6 +240,7 @@ public class FavourMenu extends AbstractContainerMenu {
     @Override
     public void broadcastChanges() {
         access.execute((level, pos) -> data.set(0, calculateTier(level, pos)));
+        updateResult();
         super.broadcastChanges();
     }
 
@@ -200,13 +267,22 @@ public class FavourMenu extends AbstractContainerMenu {
     }
 
     private static class OutputSlot extends Slot {
-        OutputSlot(Container container, int slot, int x, int y) {
+        private final FavourMenu menu;
+
+        OutputSlot(FavourMenu menu, Container container, int slot, int x, int y) {
             super(container, slot, x, y);
+            this.menu = menu;
         }
 
         @Override
         public boolean mayPlace(ItemStack stack) {
             return false;
+        }
+
+        @Override
+        public void onTake(Player player, ItemStack stack) {
+            menu.takeResult(player);
+            super.onTake(player, stack);
         }
     }
 }

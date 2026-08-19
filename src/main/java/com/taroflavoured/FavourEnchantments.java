@@ -24,7 +24,7 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:frost_walker", 2);
             add(enchantments, registry, "main:freezing_protection", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_SIEGFRIED.get())) {
-            add(enchantments, registry, "main:lunge", 3);
+            add(enchantments, registry, "mounts_of_mayhem:lunge", 3);
             add(enchantments, registry, "minecraft:breach", 4);
             add(enchantments, registry, "minecraft:sweeping_edge", 3);
         } else if (favour.is(TaroFlavoured.FAVOUR_MELUSINE.get())) {
@@ -60,7 +60,7 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:sharpness", 5);
             add(enchantments, registry, "minecraft:thorns", 3);
         } else if (favour.is(TaroFlavoured.FAVOUR_MARGOT.get())) {
-            add(enchantments, registry, "main:zephyr", 1);
+            add(enchantments, registry, "main:sway", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_AMARU.get())) {
             add(enchantments, registry, "minecraft:density", 5);
             add(enchantments, registry, "minecraft:knockback", 2);
@@ -85,7 +85,7 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:silk_touch", 1);
             add(enchantments, registry, "minecraft:protection", 4);
         } else if (favour.is(TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA.get())) {
-            add(enchantments, registry, "main:warding_armour", 1);
+            add(enchantments, registry, "main:warding", 1);
         }
 
         favour.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());

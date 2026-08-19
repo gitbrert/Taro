@@ -10,9 +10,8 @@ import java.util.List;
 /**
  * A recipe for the custom enchanting-table interface.
  *
- * The same ingredient recipe has two stages:
- * Book + ingredients -> Envious Book
- * Envious Book + ingredients -> Favour
+ * Book + no ingredients -> Envious Book (Tier 0)
+ * Envious Book + favour ingredients -> Favour
  */
 public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
     private static final List<FavourRecipe> RECIPES = createRecipes();
@@ -59,6 +58,11 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
     }
 
     public static FavourRecipe find(int tier, ItemStack input, List<ItemStack> ingredients) {
+        // Envious Book creation is a Tier 0 recipe and does not require ingredients.
+        if (input.is(net.minecraft.world.item.Items.BOOK) && ingredients.stream().allMatch(ItemStack::isEmpty)) {
+            return new FavourRecipe(0, new String[0], ItemStack.EMPTY);
+        }
+
         for (FavourRecipe recipe : RECIPES) {
             if (recipe.matches(tier, input, ingredients)) {
                 return recipe;

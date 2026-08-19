@@ -1,11 +1,16 @@
 package com.taroflavoured;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -73,6 +78,21 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> FAVOUR_LUG = ITEMS.register("favour_lug", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_ROSA_DE_LIMA = ITEMS.register("favour_rosa_de_lima", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIDI_AMAR_BOUSSENA = ITEMS.register("favour_sidi_amar_boussena", () -> new Item(new Item.Properties()));
+
+    /**
+     * Creates an Envious Book with Curse of Binding I.
+     * Enchantments are datapack registries in 1.21.1, so the active RegistryAccess
+     * must be supplied when the stack is created.
+     */
+    public static ItemStack createEnviousBook(RegistryAccess registryAccess) {
+        ItemStack stack = new ItemStack(ENVIOUS_BOOK.get());
+        var enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+        var bindingCurse = enchantmentRegistry.getOrThrow(Enchantments.BINDING_CURSE);
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(bindingCurse, 1);
+        stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
+        return stack;
+    }
 
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);

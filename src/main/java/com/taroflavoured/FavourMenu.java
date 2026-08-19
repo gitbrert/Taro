@@ -49,12 +49,12 @@ public class FavourMenu extends AbstractContainerMenu {
         checkContainerSize(container, CUSTOM_SLOT_COUNT);
         container.startOpen(playerInventory.player);
 
-        // Move the book slots one pixel down and to the right to align with the custom GUI texture.
-        addSlot(new BookInputSlot(container, INPUT_SLOT, 15, 45));
+        // Move the book slots two pixels down to align with the custom GUI texture.
+        addSlot(new BookInputSlot(container, INPUT_SLOT, 15, 47));
         for (int i = 0; i < 5; i++) {
             addSlot(new IngredientSlot(this, container, INGREDIENT_START + i, 66 + i * 20, 35, i));
         }
-        addSlot(new OutputSlot(container, OUTPUT_SLOT, 35, 45));
+        addSlot(new OutputSlot(container, OUTPUT_SLOT, 35, 47));
 
         addPlayerInventory(playerInventory);
         addDataSlots(data);

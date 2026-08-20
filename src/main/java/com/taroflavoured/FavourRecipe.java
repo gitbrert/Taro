@@ -7,12 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A recipe for the custom enchanting-table interface.
- *
- * Book + benzene + evil eye -> Envious Book (Tier 0)
- * Envious Book + favour ingredients -> Favour
- */
+/** A recipe for the custom enchanting-table interface. */
 public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
     private static final List<FavourRecipe> RECIPES = createRecipes();
 
@@ -34,18 +29,14 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
             }
             if (!matched) return false;
         }
-
         for (boolean matched : used) if (!matched) return false;
         return true;
     }
 
-    public static List<FavourRecipe> allRecipes() {
-        return RECIPES;
-    }
+    public static List<FavourRecipe> allRecipes() { return RECIPES; }
 
     public static FavourRecipe enviousBookRecipe() {
-        return new FavourRecipe(0,
-                new String[]{"taroflavoured:benzene", "taroflavoured:evil_eye"},
+        return new FavourRecipe(0, new String[]{"taroflavoured:benzene", "taroflavoured:evil_eye"},
                 new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()));
     }
 
@@ -58,9 +49,7 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             return id.getNamespace().equals("minecraft") && id.getPath().endsWith("_carpet");
         }
-        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(ingredientId))
-                .map(stack::is)
-                .orElse(false);
+        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(ingredientId)).map(stack::is).orElse(false);
     }
 
     public static FavourRecipe find(int tier, ItemStack input, List<ItemStack> ingredients) {
@@ -77,10 +66,7 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
             }
             if (nonEmpty == 2 && benzene && evilEye) return enviousBookRecipe();
         }
-
-        for (FavourRecipe recipe : RECIPES) {
-            if (recipe.matches(tier, input, ingredients)) return recipe;
-        }
+        for (FavourRecipe recipe : RECIPES) if (recipe.matches(tier, input, ingredients)) return recipe;
         return null;
     }
 
@@ -113,6 +99,6 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
 
     private static FavourRecipe recipe(int tier, String ingredient, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{ingredient}, new ItemStack(result.get())); }
     private static FavourRecipe recipe(int tier, String a, String b, String c, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c}, new ItemStack(result.get())); }
-    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforged.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d}, new ItemStack(result.get())); }
+    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d}, new ItemStack(result.get())); }
     private static FavourRecipe recipe(int tier, String a, String b, String c, String d, String e, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d, e}, new ItemStack(result.get())); }
 }

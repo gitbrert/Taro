@@ -38,7 +38,7 @@ ordering="AFTER"
 side="BOTH"
 
 [[dependencies.taroflavoured]]
-modId="magic_mirror"
+modId="mr_magic_mirrors"
 type="required"
 versionRange="[1.0,)"
 ordering="AFTER"

@@ -1,0 +1,10 @@
+{
+  "entries": [
+    {
+      "enum": "net.minecraft.world.inventory.RecipeBookType",
+      "name": "TAROFLAVOURED_FAVOUR_ENCHANTING",
+      "constructor": "()V",
+      "parameters": []
+    }
+  ]
+}

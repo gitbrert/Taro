@@ -8,6 +8,7 @@ version="0.1.0-1.21.1"
 displayName="Taro Flavoured"
 authors="Taro Flavoured"
 description='''A NeoForge 1.21.1 mod implementing the selected Taro Flavoured feature set.'''
+enumExtensions="META-INF/enumextensions.json"
 
 [[dependencies.taroflavoured]]
 modId="neoforge"

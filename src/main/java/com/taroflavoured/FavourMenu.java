@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.RecipeBookCategories;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
@@ -69,9 +69,7 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
     }
 
     private void addPlayerInventory(Inventory inventory) {
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
-        }
+        for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
         for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 142));
     }
 
@@ -119,15 +117,8 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
         return true;
     }
 
-    @Override
-    public boolean recipeMatches(RecipeHolder<FavourRecipe> recipe) {
-        return getTier() >= recipe.value().tier() && recipe.value().matches(craftingInput(), accessLevel());
-    }
-
-    @Override
-    public void fillCraftSlotsStackedContents(StackedContents itemHelper) {
-        for (int i = 0; i < RECIPE_GRID_SIZE; i++) itemHelper.accountStack(container.getItem(i));
-    }
+    @Override public boolean recipeMatches(RecipeHolder<FavourRecipe> recipe) { return getTier() >= recipe.value().tier() && recipe.value().matches(craftingInput(), accessLevel()); }
+    @Override public void fillCraftSlotsStackedContents(StackedContents itemHelper) { for (int i = 0; i < RECIPE_GRID_SIZE; i++) itemHelper.accountStack(container.getItem(i)); }
 
     @Override
     public void clearCraftingContent() {
@@ -140,7 +131,6 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
 
     @Override protected void beginPlacingRecipe() { }
     @Override protected void finishPlacingRecipe(RecipeHolder<FavourRecipe> recipe) { updateResult(); }
-
     @Override public int getResultSlotIndex() { return OUTPUT_SLOT; }
     @Override public int getGridWidth() { return RECIPE_GRID_SIZE; }
     @Override public int getGridHeight() { return 1; }
@@ -191,23 +181,16 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
     }
 
     @Override public void removed(Player player) { super.removed(player); container.stopOpen(player); if (!player.level().isClientSide) clearContainer(player, container); }
-
-    @Override public void broadcastChanges() {
-        access.execute((level, pos) -> data.set(0, calculateTier(level, pos)));
-        updateResult();
-        super.broadcastChanges();
-    }
+    @Override public void broadcastChanges() { access.execute((level, pos) -> data.set(0, calculateTier(level, pos))); updateResult(); super.broadcastChanges(); }
 
     private static class BookInputSlot extends Slot {
         BookInputSlot(Container container, int slot, int x, int y) { super(container, slot, x, y); }
         @Override public boolean mayPlace(ItemStack stack) { return stack.is(Items.BOOK) || TaroFlavoured.isEnviousBook(stack); }
     }
-
     private static class IngredientSlot extends Slot {
         IngredientSlot(Container container, int slot, int x, int y) { super(container, slot, x, y); }
         @Override public boolean mayPlace(ItemStack stack) { return true; }
     }
-
     private static class OutputSlot extends Slot {
         private final FavourMenu menu;
         OutputSlot(FavourMenu menu, Container container, int slot, int x, int y) { super(container, slot, x, y); this.menu = menu; }

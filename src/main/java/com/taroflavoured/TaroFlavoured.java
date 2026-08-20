@@ -1,58 +1,49 @@
 package com.taroflavoured;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod(TaroFlavoured.MOD_ID)
+import java.util.function.Supplier;
+
+@net.neoforged.fml.common.Mod(TaroFlavoured.MOD_ID)
 public class TaroFlavoured {
     public static final String MOD_ID = "taroflavoured";
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, MOD_ID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, MOD_ID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MOD_ID);
 
-    public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
-            "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
+    public static final RecipeBookType FAVOUR_RECIPE_BOOK = RecipeBookType.create("favour_enchanting");
+    public static final DeferredHolder<RecipeType<?>, RecipeType<FavourRecipe>> FAVOUR_RECIPE_TYPE =
+            RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("favour", FavourRecipe.Serializer::new);
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () ->
-            new Item(new Item.Properties()
-                    .rarity(Rarity.RARE)
-                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
-
+            new Item(new Item.Properties().rarity(Rarity.RARE).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
     public static final DeferredItem<Item> DIVINE_CRYSTAL = ITEMS.register("divine_crystal", () ->
-            new Item(new Item.Properties()
-                    .rarity(Rarity.RARE)
-                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
+            new Item(new Item.Properties().rarity(Rarity.RARE).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
+    public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BENZENE = ITEMS.register("benzene", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ENVIOUS_BOOK = ITEMS.register("envious_book", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
 
-    public static final DeferredItem<Item> CRYSTAL_HEART = ITEMS.register("crystal_heart", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> BENZENE = ITEMS.register("benzene", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () ->
-            new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> ENVIOUS_BOOK = ITEMS.register("envious_book", () ->
-            new Item(new Item.Properties()
-                    .stacksTo(1)
-                    .rarity(Rarity.UNCOMMON)
-                    .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
-
-    // Phase 2b Favour ingredients.
     public static final DeferredItem<Item> MEAD = ITEMS.register("mead", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CATFISH = ITEMS.register("catfish", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CHEERFUL_CLAY_STATUE = ITEMS.register("cheerful_clay_statue", () -> new Item(new Item.Properties()));
@@ -68,7 +59,6 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> WOODEN_CROSS = ITEMS.register("wooden_cross", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> NAZAR = ITEMS.register("nazar", () -> new Item(new Item.Properties()));
 
-    // Phase 2b Favours.
     public static final DeferredItem<Item> FAVOUR_DIABOBA = ITEMS.register("favour_diaboba", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_MARZANNA = ITEMS.register("favour_marzanna", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIEGFRIED = ITEMS.register("favour_siegfried", () -> new Item(new Item.Properties()));
@@ -98,14 +88,16 @@ public class TaroFlavoured {
         var bindingCurse = enchantmentRegistry.getOrThrow(Enchantments.BINDING_CURSE);
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enchantments.set(bindingCurse, 1);
-        stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
+        stack.set(net.minecraft.core.component.DataComponents.ENCHANTMENTS, enchantments.toImmutable());
         return stack;
     }
 
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
         MENUS.register(modEventBus);
-        NeoForge.EVENT_BUS.register(new HealthHandler());
+        RECIPE_TYPES.register(modEventBus);
+        RECIPE_SERIALIZERS.register(modEventBus);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(new HealthHandler());
     }
 
     public static boolean isEnviousBook(ItemStack stack) {

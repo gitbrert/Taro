@@ -47,7 +47,6 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (!visible) return;
         graphics.blit(BACKGROUND, left, top, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
-
         int start = page * (COLS * ROWS);
         for (int i = 0; i < COLS * ROWS; i++) {
             int index = start + i;
@@ -60,7 +59,6 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
             if (result.isEmpty()) result = TaroFlavoured.ENVIOUS_BOOK.get().getDefaultInstance();
             graphics.renderItem(result, x + 4, y + 4);
         }
-
         if (page > 0) graphics.blitSprite(ResourceLocation.withDefaultNamespace("recipe_book/page_backward"), left + 38, top + 144, 12, 17);
         if ((page + 1) * COLS * ROWS < recipes.size()) graphics.blitSprite(ResourceLocation.withDefaultNamespace("recipe_book/page_forward"), left + 98, top + 144, 12, 17);
 
@@ -99,6 +97,7 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     @Override public boolean charTyped(char codePoint, int modifiers) { return false; }
     @Override public void setFocused(boolean focused) {}
     @Override public boolean isFocused() { return visible; }
-    @Override public NarratableEntry.NarrationPriority narrationPriority() { return NarratableEntry.NarrationPriority.NONE; }
+    @Override public boolean isActive() { return visible; }
+    @Override public NarratableEntry.NarrationPriority narrationPriority() { return visible ? NarratableEntry.NarrationPriority.HOVERED : NarratableEntry.NarrationPriority.NONE; }
     @Override public void updateNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {}
 }

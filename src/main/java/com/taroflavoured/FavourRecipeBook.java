@@ -7,7 +7,6 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +16,6 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     private static final ResourceLocation BACKGROUND = ResourceLocation.withDefaultNamespace("textures/gui/recipe_book.png");
     private static final ResourceLocation SLOT = ResourceLocation.withDefaultNamespace("recipe_book/slot_uncraftable");
     private static final ResourceLocation SLOT_HOVER = ResourceLocation.withDefaultNamespace("recipe_book/slot_craftable");
-    private static final ResourceLocation SIDI_AMAR_BOUSSENA_RECIPE = ResourceLocation.fromNamespaceAndPath(
-            TaroFlavoured.MOD_ID, "sidi_amar_boussena");
     private static final int WIDTH = 147;
     private static final int HEIGHT = 166;
     private static final int COLS = 5;
@@ -35,7 +32,10 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
 
     public FavourRecipeBook(Minecraft minecraft) {
         this.minecraft = minecraft;
-        refreshRecipes();
+        recipes.add(FavourRecipe.enviousBookRecipe());
+        recipes.addAll(FavourRecipe.allRecipes());
+        // Sidi Amar Boussena is withheld until its Quran unlock is wired into Taro.
+        recipes.removeIf(recipe -> recipe.favour().is(TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA.get()));
     }
 
     public void init(int left, int top) { this.left = left; this.top = top; }
@@ -43,28 +43,9 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     public void toggle() { visible = !visible; if (!visible) selected = null; }
     public FavourRecipe selected() { return selected; }
 
-    private void refreshRecipes() {
-        recipes.clear();
-        recipes.add(FavourRecipe.enviousBookRecipe());
-        recipes.addAll(FavourRecipe.allRecipes());
-
-        // Sidi Amar Boussena is the only Favour whose recipe is not available from the start.
-        if (!isSidiAmarBoussenaUnlocked()) {
-            recipes.removeIf(recipe -> recipe.favour().is(TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA.get()));
-        }
-    }
-
-    private boolean isSidiAmarBoussenaUnlocked() {
-        if (minecraft.player == null || minecraft.level == null) return false;
-        return minecraft.level.getRecipeManager().byKey(SIDI_AMAR_BOUSSENA_RECIPE)
-                .map(holder -> minecraft.player.getRecipeBook().contains(holder))
-                .orElse(false);
-    }
-
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (!visible) return;
-        refreshRecipes();
         graphics.blit(BACKGROUND, left, top, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
         int start = page * (COLS * ROWS);
         for (int i = 0; i < COLS * ROWS; i++) {
@@ -101,7 +82,6 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!visible || button != 0) return false;
-        refreshRecipes();
         if (mouseX >= left + 38 && mouseX < left + 55 && mouseY >= top + 142 && mouseY < top + 164 && page > 0) { page--; selected = null; return true; }
         if (mouseX >= left + 98 && mouseX < left + 115 && mouseY >= top + 142 && mouseY < top + 164 && (page + 1) * COLS * ROWS < recipes.size()) { page++; selected = null; return true; }
         int index = hoveredIndex(mouseX, mouseY);

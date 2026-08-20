@@ -1,18 +1,21 @@
 package com.taroflavoured;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.Slot;
 
-public class FavourScreen extends AbstractContainerScreen<FavourMenu> {
+public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements RecipeUpdateListener {
     private static final int RECIPE_BOOK_WIDTH_THRESHOLD = 379;
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+            TaroFlavoured.MOD_ID, "textures/gui/enchanting_table.png");
 
     private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
     private final CraftingMenu recipeBookMenu;
@@ -55,17 +58,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(
-                TaroFlavoured.FAVOUR_GUI_TEXTURE,
-                leftPos,
-                topPos,
-                0,
-                0,
-                imageWidth,
-                imageHeight,
-                256,
-                256
-        );
+        guiGraphics.blit(GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 
     @Override

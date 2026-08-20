@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "has_quran": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "taroflavoured:sidi_amar_boussena"
+    ]
+  }
+}

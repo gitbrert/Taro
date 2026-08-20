@@ -28,7 +28,6 @@ public class TaroFlavoured {
 
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU =
             MENUS.register("favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
-    public static final RecipeBookType FAVOUR_RECIPE_BOOK = RecipeBookType.valueOf("TAROFLAVOURED_FAVOUR_ENCHANTING");
     public static final DeferredHolder<RecipeType<?>, RecipeType<FavourRecipe>> FAVOUR_RECIPE_TYPE =
             RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =

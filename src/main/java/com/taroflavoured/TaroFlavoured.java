@@ -24,6 +24,9 @@ public class TaroFlavoured {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, MOD_ID);
 
+    public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
+            "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
+
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () ->
             new Item(new Item.Properties()
                     .rarity(Rarity.RARE)

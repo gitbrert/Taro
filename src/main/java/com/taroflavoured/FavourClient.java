@@ -21,7 +21,7 @@ public final class FavourClient {
 
     @SubscribeEvent
     public static void registerRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
-        event.registerBookCategories(TaroFlavoured.FAVOUR_RECIPE_BOOK, List.of(RecipeBookCategories.CRAFTING_MISC));
+        event.registerBookCategories(net.minecraft.world.inventory.RecipeBookType.CRAFTING, List.of(RecipeBookCategories.CRAFTING_MISC));
         event.registerRecipeCategoryFinder(TaroFlavoured.FAVOUR_RECIPE_TYPE.get(), recipe -> RecipeBookCategories.CRAFTING_MISC);
     }
 }

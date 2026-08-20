@@ -17,32 +17,25 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
     private static final List<FavourRecipe> RECIPES = createRecipes();
 
     public boolean matches(int availableTier, ItemStack input, List<ItemStack> suppliedIngredients) {
-        if (availableTier < tier) {
-            return false;
-        }
+        if (availableTier < tier) return false;
+        if (!input.is(net.minecraft.world.item.Items.BOOK) && !TaroFlavoured.isEnviousBook(input)) return false;
+        if (suppliedIngredients.size() < ingredients.length) return false;
 
-        if (!input.is(net.minecraft.world.item.Items.BOOK) && !TaroFlavoured.isEnviousBook(input)) {
-            return false;
-        }
-
-        if (suppliedIngredients.size() < ingredients.length) {
-            return false;
-        }
-
-        for (int i = 0; i < suppliedIngredients.size(); i++) {
-            ItemStack supplied = suppliedIngredients.get(i);
-            if (i >= ingredients.length) {
-                if (!supplied.isEmpty()) {
-                    return false;
+        boolean[] used = new boolean[ingredients.length];
+        for (ItemStack supplied : suppliedIngredients) {
+            if (supplied.isEmpty()) continue;
+            boolean matched = false;
+            for (int i = 0; i < ingredients.length; i++) {
+                if (!used[i] && matchesIngredient(ingredients[i], supplied)) {
+                    used[i] = true;
+                    matched = true;
+                    break;
                 }
-                continue;
             }
-
-            if (!matchesIngredient(ingredients[i], supplied)) {
-                return false;
-            }
+            if (!matched) return false;
         }
 
+        for (boolean matched : used) if (!matched) return false;
         return true;
     }
 
@@ -51,7 +44,6 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             return id.getNamespace().equals("minecraft") && id.getPath().endsWith("_carpet");
         }
-
         return BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(ingredientId))
                 .map(stack::is)
                 .orElse(false);
@@ -59,18 +51,25 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
 
     public static FavourRecipe find(int tier, ItemStack input, List<ItemStack> ingredients) {
         // Tier 0: Book + exactly one Benzene and one Evil Eye -> Envious Book.
-        if (input.is(net.minecraft.world.item.Items.BOOK)
-                && ingredients.size() >= 2
-                && ingredients.get(0).is(TaroFlavoured.BENZENE.get())
-                && ingredients.get(1).is(TaroFlavoured.EVIL_EYE.get())
-                && ingredients.subList(2, ingredients.size()).stream().allMatch(ItemStack::isEmpty)) {
-            return new FavourRecipe(0, new String[]{"taroflavoured:benzene", "taroflavoured:evil_eye"}, ItemStack.EMPTY);
+        if (input.is(net.minecraft.world.item.Items.BOOK)) {
+            int nonEmpty = 0;
+            boolean benzene = false;
+            boolean evilEye = false;
+            for (ItemStack ingredient : ingredients) {
+                if (ingredient.isEmpty()) continue;
+                nonEmpty++;
+                if (ingredient.is(TaroFlavoured.BENZENE.get())) benzene = true;
+                else if (ingredient.is(TaroFlavoured.EVIL_EYE.get())) evilEye = true;
+                else return null;
+            }
+            if (nonEmpty == 2 && benzene && evilEye) {
+                return new FavourRecipe(0,
+                        new String[]{"taroflavoured:benzene", "taroflavoured:evil_eye"}, ItemStack.EMPTY);
+            }
         }
 
         for (FavourRecipe recipe : RECIPES) {
-            if (recipe.matches(tier, input, ingredients)) {
-                return recipe;
-            }
+            if (recipe.matches(tier, input, ingredients)) return recipe;
         }
         return null;
     }
@@ -109,19 +108,8 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
         return List.copyOf(recipes);
     }
 
-    private static FavourRecipe recipe(int tier, String ingredient, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) {
-        return new FavourRecipe(tier, new String[]{ingredient}, new ItemStack(result.get()));
-    }
-
-    private static FavourRecipe recipe(int tier, String a, String b, String c, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) {
-        return new FavourRecipe(tier, new String[]{a, b, c}, new ItemStack(result.get()));
-    }
-
-    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) {
-        return new FavourRecipe(tier, new String[]{a, b, c, d}, new ItemStack(result.get()));
-    }
-
-    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, String e, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) {
-        return new FavourRecipe(tier, new String[]{a, b, c, d, e}, new ItemStack(result.get()));
-    }
+    private static FavourRecipe recipe(int tier, String ingredient, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{ingredient}, new ItemStack(result.get())); }
+    private static FavourRecipe recipe(int tier, String a, String b, String c, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c}, new ItemStack(result.get())); }
+    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d}, new ItemStack(result.get())); }
+    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, String e, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d, e}, new ItemStack(result.get())); }
 }

@@ -1,7 +1,6 @@
 package com.taroflavoured;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -14,7 +13,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 public final class FavourEnchantments {
     private FavourEnchantments() {}
 
-    public static ItemStack apply(ItemStack favour, RegistryAccess registryAccess) {
+    public static ItemStack apply(ItemStack favour, HolderLookup.Provider registryAccess) {
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         HolderLookup.RegistryLookup<Enchantment> registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 

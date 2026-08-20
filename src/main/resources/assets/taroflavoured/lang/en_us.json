@@ -27,5 +27,10 @@
   "item.taroflavoured.favour_cosanzeana": "Cosânzeana's Favour",
   "item.taroflavoured.favour_lug": "Lug's Favour",
   "item.taroflavoured.favour_rosa_de_lima": "Rosa de Lima's Favour",
-  "item.taroflavoured.favour_sidi_amar_boussena": "Sidi Amar Boussena's Favour"
+  "item.taroflavoured.favour_sidi_amar_boussena": "Sidi Amar Boussena's Favour",
+  "enchantment.taroflavoured.freezing_protection": "Freezing Protection",
+  "enchantment.taroflavoured.traversal": "Traversal",
+  "enchantment.taroflavoured.reach": "Reach",
+  "enchantment.taroflavoured.sway": "Sway",
+  "enchantment.taroflavoured.warding": "Warding"
 }

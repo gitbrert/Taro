@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,7 +23,6 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     private static final int SLOT_SIZE = 25;
 
     private final Minecraft minecraft;
-    private final FavourScreen screen;
     private boolean visible;
     private int left;
     private int top;
@@ -32,30 +30,20 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     private FavourRecipe selected;
     private final List<FavourRecipe> recipes = new ArrayList<>();
 
-    public FavourRecipeBook(Minecraft minecraft, FavourScreen screen) {
+    public FavourRecipeBook(Minecraft minecraft) {
         this.minecraft = minecraft;
-        this.screen = screen;
         recipes.add(FavourRecipe.enviousBookRecipe());
         recipes.addAll(FavourRecipe.allRecipes());
-        // Sidi Amar Boussena is intentionally withheld until its Quran unlock is wired
-        // into the Taro recipe-book state. All other Phase 2b recipes are available.
+        // Sidi Amar Boussena is withheld until its Quran unlock is wired into Taro.
         recipes.removeIf(recipe -> recipe.favour().is(TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA.get()));
     }
 
-    public void init(int left, int top) {
-        this.left = left;
-        this.top = top;
-    }
-
+    public void init(int left, int top) { this.left = left; this.top = top; }
     public boolean isVisible() { return visible; }
-
-    public void toggle() {
-        visible = !visible;
-        if (!visible) selected = null;
-    }
-
+    public void toggle() { visible = !visible; if (!visible) selected = null; }
     public FavourRecipe selected() { return selected; }
 
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (!visible) return;
         graphics.blit(BACKGROUND, left, top, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
@@ -96,27 +84,16 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!visible || button != 0) return false;
-        if (mouseX >= left + 38 && mouseX < left + 55 && mouseY >= top + 142 && mouseY < top + 164 && page > 0) {
-            page--;
-            selected = null;
-            return true;
-        }
-        if (mouseX >= left + 98 && mouseX < left + 115 && mouseY >= top + 142 && mouseY < top + 164 && (page + 1) * COLS * ROWS < recipes.size()) {
-            page++;
-            selected = null;
-            return true;
-        }
+        if (mouseX >= left + 38 && mouseX < left + 55 && mouseY >= top + 142 && mouseY < top + 164 && page > 0) { page--; selected = null; return true; }
+        if (mouseX >= left + 98 && mouseX < left + 115 && mouseY >= top + 142 && mouseY < top + 164 && (page + 1) * COLS * ROWS < recipes.size()) { page++; selected = null; return true; }
         int index = hoveredIndex(mouseX, mouseY);
-        if (index >= 0) {
-            selected = recipes.get(index);
-            return true;
-        }
+        if (index >= 0) { selected = recipes.get(index); return true; }
         return false;
     }
 
     @Override public boolean mouseReleased(double mouseX, double mouseY, int button) { return false; }
     @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) { return false; }
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) { return false; }
+    @Override public boolean mouseScrolled(double mouseX, double mouseY, double delta) { return false; }
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) { return false; }
     @Override public boolean keyReleased(int keyCode, int scanCode, int modifiers) { return false; }
     @Override public boolean charTyped(char codePoint, int modifiers) { return false; }
@@ -124,5 +101,4 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
     @Override public boolean isFocused() { return visible; }
     @Override public NarratableEntry.NarrationPriority narrationPriority() { return NarratableEntry.NarrationPriority.NONE; }
     @Override public void updateNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {}
-    @Override public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { render(graphics, mouseX, mouseY, partialTick); }
 }

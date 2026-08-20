@@ -135,7 +135,7 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
     @Override public int getGridWidth() { return RECIPE_GRID_SIZE; }
     @Override public int getGridHeight() { return 1; }
     @Override public int getSize() { return RECIPE_GRID_SIZE; }
-    @Override public RecipeBookType getRecipeBookType() { return TaroFlavoured.FAVOUR_RECIPE_BOOK; }
+    @Override public RecipeBookType getRecipeBookType() { return RecipeBookType.CRAFTING; }
     @Override public List<RecipeBookCategories> getRecipeBookCategories() { return List.of(RecipeBookCategories.CRAFTING_MISC); }
     @Override public boolean shouldMoveToInventory(int slotIndex) { return slotIndex == OUTPUT_SLOT; }
 

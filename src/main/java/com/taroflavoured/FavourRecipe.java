@@ -1,13 +1,8 @@
 package com.taroflavoured;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -16,6 +11,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.List;
 
@@ -38,7 +39,6 @@ public final class FavourRecipe implements CraftingRecipe {
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
-        if (input.size() != 6) return false;
         boolean[] used = new boolean[ingredients.size()];
         int nonEmpty = 0;
         for (int slot = 0; slot < input.size(); slot++) {
@@ -60,15 +60,32 @@ public final class FavourRecipe implements CraftingRecipe {
         return true;
     }
 
-    @Override public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) { return result.copy(); }
-    @Override public boolean canCraftInDimensions(int width, int height) { return width >= 6 && height >= 1; }
-    @Override public CraftingBookCategory getCategory() { return CraftingBookCategory.MISC; }
-    @Override public String getGroup() { return group; }
-    @Override public NonNullList<Ingredient> getIngredients() { return ingredients; }
-    @Override public ItemStack getResultItem(HolderLookup.Provider registries) { return result.copy(); }
-    @Override public RecipeSerializer<?> getSerializer() { return TaroFlavoured.FAVOUR_RECIPE_SERIALIZER.get(); }
-    @Override public RecipeType<?> getType() { return TaroFlavoured.FAVOUR_RECIPE_TYPE.get(); }
-    @Override public ItemStack getToastSymbol() { return new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()); }
+    @Override
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) { return result.copy(); }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) { return width >= 6 && height >= 1; }
+
+    @Override
+    public String getGroup() { return group; }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() { return ingredients; }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) { return result.copy(); }
+
+    @Override
+    public CraftingBookCategory category() { return CraftingBookCategory.MISC; }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() { return TaroFlavoured.FAVOUR_RECIPE_SERIALIZER.get(); }
+
+    @Override
+    public RecipeType<?> getType() { return TaroFlavoured.FAVOUR_RECIPE_TYPE.get(); }
+
+    @Override
+    public ItemStack getToastSymbol() { return new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()); }
 
     public static class Serializer implements RecipeSerializer<FavourRecipe> {
         public static final MapCodec<FavourRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

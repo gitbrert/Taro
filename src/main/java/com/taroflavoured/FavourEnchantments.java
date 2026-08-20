@@ -22,7 +22,7 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:bane_of_arthropods", 5);
         } else if (favour.is(TaroFlavoured.FAVOUR_MARZANNA.get())) {
             add(enchantments, registry, "minecraft:frost_walker", 2);
-            add(enchantments, registry, "main:freezing_protection", 1);
+            add(enchantments, registry, "taroflavoured:freezing_protection", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_SIEGFRIED.get())) {
             add(enchantments, registry, "mounts_of_mayhem:lunge", 3);
             add(enchantments, registry, "minecraft:breach", 4);
@@ -35,7 +35,7 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:swift_sneak", 3);
             add(enchantments, registry, "minecraft:soul_speed", 3);
         } else if (favour.is(TaroFlavoured.FAVOUR_ENKIDU.get())) {
-            add(enchantments, registry, "main:traversal", 1);
+            add(enchantments, registry, "taroflavoured:traversal", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_ILLAPA.get())) {
             add(enchantments, registry, "minecraft:channeling", 1);
             add(enchantments, registry, "minecraft:smite", 5);
@@ -60,7 +60,7 @@ public final class FavourEnchantments {
             add(enchantments, registry, "minecraft:sharpness", 5);
             add(enchantments, registry, "minecraft:thorns", 3);
         } else if (favour.is(TaroFlavoured.FAVOUR_MARGOT.get())) {
-            add(enchantments, registry, "main:sway", 1);
+            add(enchantments, registry, "taroflavoured:sway", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_AMARU.get())) {
             add(enchantments, registry, "minecraft:density", 5);
             add(enchantments, registry, "minecraft:knockback", 2);
@@ -80,12 +80,12 @@ public final class FavourEnchantments {
         } else if (favour.is(TaroFlavoured.FAVOUR_COSANZEANA.get())) {
             add(enchantments, registry, "minecraft:mending", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_LUG.get())) {
-            add(enchantments, registry, "main:reach", 1);
+            add(enchantments, registry, "taroflavoured:reach", 1);
         } else if (favour.is(TaroFlavoured.FAVOUR_ROSA_DE_LIMA.get())) {
             add(enchantments, registry, "minecraft:silk_touch", 1);
             add(enchantments, registry, "minecraft:protection", 4);
         } else if (favour.is(TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA.get())) {
-            add(enchantments, registry, "main:warding", 1);
+            add(enchantments, registry, "taroflavoured:warding", 1);
         }
 
         favour.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());

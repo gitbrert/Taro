@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -77,6 +78,9 @@ public final class FavourRecipe implements CraftingRecipe {
 
     @Override
     public CraftingBookCategory category() { return CraftingBookCategory.MISC; }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() { return TaroFlavoured.FAVOUR_RECIPE_BOOK_CATEGORY.get(); }
 
     @Override
     public RecipeSerializer<?> getSerializer() { return TaroFlavoured.FAVOUR_RECIPE_SERIALIZER.get(); }

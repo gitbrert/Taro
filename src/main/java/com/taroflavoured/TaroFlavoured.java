@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +25,7 @@ public class TaroFlavoured {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, MOD_ID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MOD_ID);
+    public static final DeferredRegister<RecipeBookCategory> RECIPE_BOOK_CATEGORIES = DeferredRegister.create(BuiltInRegistries.RECIPE_BOOK_CATEGORY, MOD_ID);
 
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU =
             MENUS.register("favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
@@ -31,6 +33,8 @@ public class TaroFlavoured {
             RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("favour", FavourRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeBookCategory, RecipeBookCategory> FAVOUR_RECIPE_BOOK_CATEGORY =
+            RECIPE_BOOK_CATEGORIES.register("favour", RecipeBookCategory::new);
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () -> new Item(new Item.Properties().rarity(Rarity.RARE).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
     public static final DeferredItem<Item> DIVINE_CRYSTAL = ITEMS.register("divine_crystal", () -> new Item(new Item.Properties().rarity(Rarity.RARE).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
@@ -92,6 +96,7 @@ public class TaroFlavoured {
         MENUS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
+        RECIPE_BOOK_CATEGORIES.register(modEventBus);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(new HealthHandler());
     }
 

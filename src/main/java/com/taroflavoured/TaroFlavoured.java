@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
@@ -59,10 +60,10 @@ public class TaroFlavoured {
             "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
-            RECIPE_SERIALIZERS.register("favour", () -> new RecipeSerializer<>(FavourRecipe.CODEC, FavourRecipe.STREAM_CODEC));
+            RECIPE_SERIALIZERS.register("favour", FavourRecipeSerializer::new);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<FavourRecipe>> FAVOUR_RECIPE_TYPE =
-            RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
+            RECIPE_TYPES.register("favour", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
 
     /** Added to RecipeBookType by NeoForge's enum extension system. */
     public static final RecipeBookType FAVOUR_RECIPE_BOOK_TYPE = RecipeBookType.valueOf("TARO_FAVOURS");

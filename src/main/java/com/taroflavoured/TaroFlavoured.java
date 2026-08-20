@@ -1,16 +1,19 @@
 package com.taroflavoured;
 
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -24,6 +27,8 @@ public class TaroFlavoured {
     public static final String MOD_ID = "taroflavoured";
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, MOD_ID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, MOD_ID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, MOD_ID);
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () ->
             new Item(new Item.Properties()
@@ -44,8 +49,6 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () ->
             new Item(new Item.Properties()));
 
-    // Envious Book is a separate item. Its Curse of Binding component is added
-    // when an Envious Book stack is created with the active enchantment registry.
     public static final DeferredItem<Item> ENVIOUS_BOOK = ITEMS.register("envious_book", () ->
             new Item(new Item.Properties()
                     .stacksTo(1)
@@ -54,6 +57,15 @@ public class TaroFlavoured {
 
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
             "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
+
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("favour", () -> new RecipeSerializer<>(FavourRecipe.CODEC, FavourRecipe.STREAM_CODEC));
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<FavourRecipe>> FAVOUR_RECIPE_TYPE =
+            RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
+
+    /** Added to RecipeBookType by NeoForge's enum extension system. */
+    public static final RecipeBookType FAVOUR_RECIPE_BOOK_TYPE = RecipeBookType.valueOf("TARO_FAVOURS");
 
     // Phase 2b Favours
     public static final DeferredItem<Item> FAVOUR_DIABOBA = ITEMS.register("favour_diaboba", () -> new Item(new Item.Properties()));
@@ -79,12 +91,8 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> FAVOUR_ROSA_DE_LIMA = ITEMS.register("favour_rosa_de_lima", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIDI_AMAR_BOUSSENA = ITEMS.register("favour_sidi_amar_boussena", () -> new Item(new Item.Properties()));
 
-    /**
-     * Creates an Envious Book with Curse of Binding I.
-     * Enchantments are datapack registries in 1.21.1, so the active RegistryAccess
-     * must be supplied when the stack is created.
-     */
-    public static ItemStack createEnviousBook(RegistryAccess registryAccess) {
+    /** Creates an Envious Book with Curse of Binding I. */
+    public static ItemStack createEnviousBook(HolderLookup.Provider registryAccess) {
         ItemStack stack = new ItemStack(ENVIOUS_BOOK.get());
         var enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
         var bindingCurse = enchantmentRegistry.getOrThrow(Enchantments.BINDING_CURSE);
@@ -97,6 +105,8 @@ public class TaroFlavoured {
     public TaroFlavoured(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
         MENUS.register(modEventBus);
+        RECIPE_SERIALIZERS.register(modEventBus);
+        RECIPE_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.register(new HealthHandler());
     }
 

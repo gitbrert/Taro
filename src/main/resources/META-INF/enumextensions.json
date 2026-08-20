@@ -1,0 +1,10 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "TARO_FAVOURS",
+      "constructor": "()V",
+      "parameters": []
+    }
+  ]
+}

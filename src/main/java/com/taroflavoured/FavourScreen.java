@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.Slot;
 
 public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements RecipeUpdateListener {
@@ -18,7 +17,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             TaroFlavoured.MOD_ID, "textures/gui/enchanting_table.png");
 
     private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
-    private final CraftingMenu recipeBookMenu;
     private boolean widthTooNarrow;
 
     public FavourScreen(FavourMenu menu, Inventory inventory, Component title) {
@@ -27,10 +25,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         this.imageHeight = 166;
         this.titleLabelX = 8;
         this.inventoryLabelX = 8;
-
-        // The vanilla recipe book is backed by a CraftingMenu for now. This gives us the
-        // complete vanilla crafting recipe-book UI without changing the Favour menu yet.
-        this.recipeBookMenu = new CraftingMenu(menu.containerId, inventory);
     }
 
     @Override
@@ -38,7 +32,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         super.init();
 
         this.widthTooNarrow = this.width < RECIPE_BOOK_WIDTH_THRESHOLD;
-        this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.recipeBookMenu);
+        this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.topPos = (this.height - this.imageHeight) / 2;
 
@@ -83,9 +77,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.recipeBookComponent.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
+        if (this.recipeBookComponent.mouseClicked(mouseX, mouseY, button)) return true;
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -107,17 +99,13 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.recipeBookComponent.keyPressed(keyCode, scanCode, modifiers)) {
-            return true;
-        }
+        if (this.recipeBookComponent.keyPressed(keyCode, scanCode, modifiers)) return true;
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        if (this.recipeBookComponent.charTyped(codePoint, modifiers)) {
-            return true;
-        }
+        if (this.recipeBookComponent.charTyped(codePoint, modifiers)) return true;
         return super.charTyped(codePoint, modifiers);
     }
 

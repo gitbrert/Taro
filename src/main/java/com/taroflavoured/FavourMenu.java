@@ -11,18 +11,20 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
+import java.util.List;
+
+public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
     public static final int INPUT_SLOT = 0;
     public static final int INGREDIENT_START = 1;
     public static final int OUTPUT_SLOT = 6;
@@ -59,9 +61,7 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
         container.startOpen(playerInventory.player);
 
         addSlot(new BookInputSlot(container, INPUT_SLOT, 15, 47));
-        for (int i = 0; i < 5; i++) {
-            addSlot(new IngredientSlot(container, INGREDIENT_START + i, 66 + i * 20, 35));
-        }
+        for (int i = 0; i < 5; i++) addSlot(new IngredientSlot(container, INGREDIENT_START + i, 66 + i * 20, 35));
         addSlot(new OutputSlot(this, container, OUTPUT_SLOT, 35, 47));
 
         addPlayerInventory(playerInventory);
@@ -70,19 +70,13 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
 
     private void addPlayerInventory(Inventory inventory) {
         for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
-            }
+            for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
         }
         for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 142));
     }
 
     public int getTier() { return data.get(0); }
-
-    public int getActiveIngredientCount() {
-        return switch (getTier()) { case 0 -> 2; case 1 -> 3; case 2 -> 4; default -> 5; };
-    }
-
+    public int getActiveIngredientCount() { return switch (getTier()) { case 0 -> 2; case 1 -> 3; case 2 -> 4; default -> 5; }; }
     public BlockPos getBlockPos() { return blockPos; }
 
     private CraftingInput craftingInput() {
@@ -91,22 +85,16 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
         return CraftingInput.of(RECIPE_GRID_SIZE, 1, input);
     }
 
-    private RecipeHolder<CraftingRecipe> findRecipe() {
-        Level level = accessLevel();
-        if (level == null) return null;
-        return level.getRecipeManager().getRecipeFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get(), craftingInput(), level).orElse(null);
-    }
-
     private void updateResult() {
-        RecipeHolder<CraftingRecipe> holder = findRecipe();
+        RecipeHolder<FavourRecipe> holder = null;
+        Level level = accessLevel();
+        if (level != null) holder = level.getRecipeManager().getRecipeFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get(), craftingInput(), level).orElse(null);
+
         ItemStack result = ItemStack.EMPTY;
-        if (holder != null && holder.value() instanceof FavourRecipe recipe && getTier() >= recipe.tier()) {
-            result = recipe.assemble(craftingInput(), accessLevel().registryAccess());
-            if (result.is(TaroFlavoured.ENVIOUS_BOOK.get())) {
-                result = TaroFlavoured.createEnviousBook(accessLevel().registryAccess());
-            } else if (TaroFlavoured.isEnviousBook(container.getItem(INPUT_SLOT))) {
-                result = FavourEnchantments.apply(result, accessLevel().registryAccess());
-            }
+        if (holder != null && getTier() >= holder.value().tier()) {
+            result = holder.value().assemble(craftingInput(), level.registryAccess());
+            if (result.is(TaroFlavoured.ENVIOUS_BOOK.get())) result = TaroFlavoured.createEnviousBook(level.registryAccess());
+            else if (TaroFlavoured.isEnviousBook(container.getItem(INPUT_SLOT))) result = FavourEnchantments.apply(result, level.registryAccess());
         }
         container.setItem(OUTPUT_SLOT, result);
     }
@@ -132,10 +120,8 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
     }
 
     @Override
-    public boolean recipeMatches(RecipeHolder<CraftingRecipe> recipe) {
-        if (!(recipe.value() instanceof FavourRecipe favourRecipe)) return false;
-        if (getTier() < favourRecipe.tier()) return false;
-        return favourRecipe.matches(craftingInput(), accessLevel());
+    public boolean recipeMatches(RecipeHolder<FavourRecipe> recipe) {
+        return getTier() >= recipe.value().tier() && recipe.value().matches(craftingInput(), accessLevel());
     }
 
     @Override
@@ -152,46 +138,34 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
         container.setItem(OUTPUT_SLOT, ItemStack.EMPTY);
     }
 
-    @Override
-    protected void beginPlacingRecipe() {
-        // RecipeBookMenu performs the actual slot placement after clearing the grid.
-    }
-
-    @Override
-    protected void finishPlacingRecipe(RecipeHolder<CraftingRecipe> recipe) {
-        updateResult();
-    }
+    @Override protected void beginPlacingRecipe() { }
+    @Override protected void finishPlacingRecipe(RecipeHolder<FavourRecipe> recipe) { updateResult(); }
 
     @Override public int getResultSlotIndex() { return OUTPUT_SLOT; }
     @Override public int getGridWidth() { return RECIPE_GRID_SIZE; }
     @Override public int getGridHeight() { return 1; }
     @Override public int getSize() { return RECIPE_GRID_SIZE; }
-    @Override public RecipeBookType getRecipeBookType() { return TaroFlavoured.FAVOUR_RECIPE_BOOK; }
+    @Override public RecipeBookType getRecipeBookType() { return RecipeBookType.CRAFTING; }
+    @Override public List<RecipeBookCategories> getRecipeBookCategories() { return List.of(RecipeBookCategories.CRAFTING_MISC); }
     @Override public boolean shouldMoveToInventory(int slotIndex) { return slotIndex == OUTPUT_SLOT; }
 
     private static int calculateTier(Level level, BlockPos tablePos) {
         int shelves = 0;
-        for (int dx = -2; dx <= 2; dx++) {
-            for (int dz = -2; dz <= 2; dz++) {
-                if (Math.max(Math.abs(dx), Math.abs(dz)) != 2) continue;
-                for (int dy = 0; dy <= 1; dy++) {
-                    BlockPos shelfPos = tablePos.offset(dx, dy, dz);
-                    if (level.getBlockState(shelfPos).is(Blocks.BOOKSHELF) && isBookshelfPathClear(level, tablePos, dx, dy, dz)) shelves++;
-                }
+        for (int dx = -2; dx <= 2; dx++) for (int dz = -2; dz <= 2; dz++) {
+            if (Math.max(Math.abs(dx), Math.abs(dz)) != 2) continue;
+            for (int dy = 0; dy <= 1; dy++) {
+                BlockPos shelfPos = tablePos.offset(dx, dy, dz);
+                if (level.getBlockState(shelfPos).is(Blocks.BOOKSHELF) && isBookshelfPathClear(level, tablePos, dx, dy, dz)) shelves++;
             }
         }
         return Math.min(3, shelves / 5);
     }
 
     private static boolean isBookshelfPathClear(Level level, BlockPos tablePos, int dx, int dy, int dz) {
-        int stepX = Integer.signum(dx);
-        int stepZ = Integer.signum(dz);
+        int stepX = Integer.signum(dx), stepZ = Integer.signum(dz);
         BlockPos firstGap = tablePos.offset(stepX, dy, stepZ);
         if (!level.getBlockState(firstGap).isAir()) return false;
-        if (dx != 0 && dz != 0) {
-            return level.getBlockState(tablePos.offset(stepX, dy, 0)).isAir()
-                    && level.getBlockState(tablePos.offset(0, dy, stepZ)).isAir();
-        }
+        if (dx != 0 && dz != 0) return level.getBlockState(tablePos.offset(stepX, dy, 0)).isAir() && level.getBlockState(tablePos.offset(0, dy, stepZ)).isAir();
         return true;
     }
 
@@ -216,15 +190,9 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
         return source;
     }
 
-    @Override
-    public void removed(Player player) {
-        super.removed(player);
-        container.stopOpen(player);
-        if (!player.level().isClientSide) clearContainer(player, container);
-    }
+    @Override public void removed(Player player) { super.removed(player); container.stopOpen(player); if (!player.level().isClientSide) clearContainer(player, container); }
 
-    @Override
-    public void broadcastChanges() {
+    @Override public void broadcastChanges() {
         access.execute((level, pos) -> data.set(0, calculateTier(level, pos)));
         updateResult();
         super.broadcastChanges();

@@ -91,7 +91,7 @@ public final class FavourRecipeBook implements Renderable, GuiEventListener, Nar
 
     @Override public boolean mouseReleased(double mouseX, double mouseY, int button) { return false; }
     @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) { return false; }
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) { return false; }
+    @Override public boolean mouseScrolled(double mouseX, double mouseY, double delta) { return false; }
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) { return false; }
     @Override public boolean keyReleased(int keyCode, int scanCode, int modifiers) { return false; }
     @Override public boolean charTyped(char codePoint, int modifiers) { return false; }

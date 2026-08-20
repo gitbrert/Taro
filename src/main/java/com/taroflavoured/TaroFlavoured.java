@@ -8,7 +8,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.bus.api.IEventBus;
@@ -44,18 +43,29 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> EVIL_EYE = ITEMS.register("evil_eye", () ->
             new Item(new Item.Properties()));
 
-    // Envious Book is a separate item. Its Curse of Binding component is added
-    // when an Envious Book stack is created with the active enchantment registry.
     public static final DeferredItem<Item> ENVIOUS_BOOK = ITEMS.register("envious_book", () ->
             new Item(new Item.Properties()
                     .stacksTo(1)
                     .rarity(Rarity.UNCOMMON)
                     .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
 
-    public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU = MENUS.register(
-            "favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
+    // Phase 2b Favour ingredients.
+    public static final DeferredItem<Item> MEAD = ITEMS.register("mead", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> CATFISH = ITEMS.register("catfish", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> CHEERFUL_CLAY_STATUE = ITEMS.register("cheerful_clay_statue", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> MOURNFUL_CLAY_STATUE = ITEMS.register("mournful_clay_statue", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> COMPOUND_BOW = ITEMS.register("compound_bow", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BRONZE_LAUREL = ITEMS.register("bronze_laurel", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> GLOW_JAM = ITEMS.register("glow_jam", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> GOLDEN_APPLE_EMPANADA = ITEMS.register("golden_apple_empanada", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> HONEY_GINGER_TEA = ITEMS.register("honey_ginger_tea", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> GOLDEN_CARROT_CUPCAKE = ITEMS.register("golden_carrot_cupcake", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> OPAL_EARRINGS = ITEMS.register("opal_earrings", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> TUNISIAN_BARB = ITEMS.register("tunisian_barb", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> WOODEN_CROSS = ITEMS.register("wooden_cross", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> NAZAR = ITEMS.register("nazar", () -> new Item(new Item.Properties()));
 
-    // Phase 2b Favours
+    // Phase 2b Favours.
     public static final DeferredItem<Item> FAVOUR_DIABOBA = ITEMS.register("favour_diaboba", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_MARZANNA = ITEMS.register("favour_marzanna", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIEGFRIED = ITEMS.register("favour_siegfried", () -> new Item(new Item.Properties()));
@@ -79,11 +89,6 @@ public class TaroFlavoured {
     public static final DeferredItem<Item> FAVOUR_ROSA_DE_LIMA = ITEMS.register("favour_rosa_de_lima", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FAVOUR_SIDI_AMAR_BOUSSENA = ITEMS.register("favour_sidi_amar_boussena", () -> new Item(new Item.Properties()));
 
-    /**
-     * Creates an Envious Book with Curse of Binding I.
-     * Enchantments are datapack registries in 1.21.1, so the active RegistryAccess
-     * must be supplied when the stack is created.
-     */
     public static ItemStack createEnviousBook(RegistryAccess registryAccess) {
         ItemStack stack = new ItemStack(ENVIOUS_BOOK.get());
         var enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);

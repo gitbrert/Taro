@@ -1,0 +1,14 @@
+{
+  "type": "taroflavoured:favour",
+  "tier": 3,
+  "group": "favours",
+  "ingredients": [
+    {
+      "tag": "minecraft:carpets"
+    }
+  ],
+  "result": {
+    "id": "taroflavoured:favour_sidi_amar_boussena",
+    "count": 1
+  }
+}

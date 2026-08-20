@@ -80,28 +80,28 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
         // Tier 1
         recipes.add(recipe(1, "minecraft:spider_eye", "minecraft:cobweb", "minecraft:fermented_spider_eye", TaroFlavoured.FAVOUR_DIABOBA));
         recipes.add(recipe(1, "minecraft:snow_block", "minecraft:powder_snow_bucket", "minecraft:blue_ice", TaroFlavoured.FAVOUR_MARZANNA));
-        recipes.add(recipe(1, "minecraft:iron_sword", "matchainfused:mead", "minecraft:goat_horn", TaroFlavoured.FAVOUR_SIEGFRIED));
-        recipes.add(recipe(1, "matchainfused:catfish", "minecraft:bricks", "minecraft:phantom_membrane", TaroFlavoured.FAVOUR_MELUSINE));
+        recipes.add(recipe(1, "minecraft:iron_sword", "taroflavoured:mead", "minecraft:goat_horn", TaroFlavoured.FAVOUR_SIEGFRIED));
+        recipes.add(recipe(1, "taroflavoured:catfish", "minecraft:bricks", "minecraft:phantom_membrane", TaroFlavoured.FAVOUR_MELUSINE));
         recipes.add(recipe(1, "minecraft:soul_sand", "minecraft:bone", "minecraft:echo_shard", TaroFlavoured.FAVOUR_ANKOU));
         recipes.add(recipe(1, "minecraft:leather_boots", "minecraft:filled_map", "minecraft:boat", TaroFlavoured.FAVOUR_ENKIDU));
 
         // Tier 2
-        recipes.add(recipe(2, "minecraft:lightning_rod", "matchainfused:mournful_clay_statue", "minecraft:firework_star", "matchainfused:copper_spear", TaroFlavoured.FAVOUR_ILLAPA));
+        recipes.add(recipe(2, "minecraft:lightning_rod", "taroflavoured:mournful_clay_statue", "minecraft:firework_star", "mounts_of_mayhem:copper_spear", TaroFlavoured.FAVOUR_ILLAPA));
         recipes.add(recipe(2, "minecraft:golden_pickaxe", "create:limestone", "minecraft:bamboo", "minecraft:golden_hoe", TaroFlavoured.FAVOUR_SON_TINH));
-        recipes.add(recipe(2, "minecraft:wind_charge", "matchainfused:cheerful_clay_statue", "minecraft:phantom_membrane", "create:windmill_sail", TaroFlavoured.FAVOUR_WAYRA));
-        recipes.add(recipe(2, "minecraft:emerald_block", "minecraft:spectral_arrow", "matchainfused:compound_bow", "minecraft:magma_block", TaroFlavoured.FAVOUR_HOU_YI));
-        recipes.add(recipe(2, "minecraft:axolotl_bucket", "matchainfused:stone_spear", "minecraft:wither_skeleton_skull", "minecraft:jungle_explorer_map", TaroFlavoured.FAVOUR_AH_PUCH));
-        recipes.add(recipe(2, "minecraft:spore_blossom", "matchainfused:bronze_laurel", "matchainfused:compound_bow", "minecraft:sniffer_egg", TaroFlavoured.FAVOUR_JUMONG));
-        recipes.add(recipe(2, "minecraft:mourner_pottery_sherd", "matcha:nazar", "mr_magic_mirrors:chaos_mirror", "minecraft:pufferfish", TaroFlavoured.FAVOUR_AISHA));
-        recipes.add(recipe(2, "minecraft:red_mushroom", "minecraft:music_disc_relic", "minecraft:amethyst_shard", "matchainfused:glow_jam", TaroFlavoured.FAVOUR_MARGOT));
+        recipes.add(recipe(2, "minecraft:wind_charge", "taroflavoured:cheerful_clay_statue", "minecraft:phantom_membrane", "create:windmill_sail", TaroFlavoured.FAVOUR_WAYRA));
+        recipes.add(recipe(2, "minecraft:emerald_block", "minecraft:spectral_arrow", "taroflavoured:compound_bow", "minecraft:magma_block", TaroFlavoured.FAVOUR_HOU_YI));
+        recipes.add(recipe(2, "minecraft:axolotl_bucket", "mounts_of_mayhem:stone_spear", "minecraft:wither_skeleton_skull", "minecraft:jungle_explorer_map", TaroFlavoured.FAVOUR_AH_PUCH));
+        recipes.add(recipe(2, "minecraft:spore_blossom", "taroflavoured:bronze_laurel", "taroflavoured:compound_bow", "minecraft:sniffer_egg", TaroFlavoured.FAVOUR_JUMONG));
+        recipes.add(recipe(2, "minecraft:mourner_pottery_sherd", "taroflavoured:nazar", "mr_magic_mirrors:chaos_mirror", "minecraft:pufferfish", TaroFlavoured.FAVOUR_AISHA));
+        recipes.add(recipe(2, "minecraft:red_mushroom", "minecraft:music_disc_relic", "minecraft:amethyst_shard", "taroflavoured:glow_jam", TaroFlavoured.FAVOUR_MARGOT));
 
         // Tier 3
         recipes.add(recipe(3, "minecraft:packed_mud", "minecraft:prismarine_shard", "minecraft:dragon_breath", "minecraft:feather", "minecraft:glass", TaroFlavoured.FAVOUR_AMARU));
         recipes.add(recipe(3, "minecraft:fire_coral", "minecraft:turtle_scute", "minecraft:tide_armor_trim_smithing_template", "minecraft:nautilus_shell", "minecraft:horn_coral", TaroFlavoured.FAVOUR_THUY_TINH));
         recipes.add(recipe(3, "minecraft:gold_block", "minecraft:feather", "taroflavoured:divine_crystal", "minecraft:sunflower", "minecraft:magma_block", TaroFlavoured.FAVOUR_SAMJOK_O));
-        recipes.add(recipe(3, "minecraft:emerald_block", "matchainfused:golden_apple_empanada", "matchainfused:honey_ginger_tea", "matchainfused:golden_carrot_cupcake", "minecraft:diamond_block", TaroFlavoured.FAVOUR_BUDAI));
-        recipes.add(recipe(3, "matchainfused:opal_earrings", "matchainfused:tunisian_barb", "minecraft:enchanted_golden_apple", "minecraft:wildflowers", "matchainfused:wooden_cross", TaroFlavoured.FAVOUR_COSANZEANA));
-        recipes.add(recipe(3, "create:engineers_goggles", "minecraft:saddle", "matchainfused:netherite_spear", "minecraft:lead", "minecraft:honeycomb", TaroFlavoured.FAVOUR_LUG));
+        recipes.add(recipe(3, "minecraft:emerald_block", "taroflavoured:golden_apple_empanada", "taroflavoured:honey_ginger_tea", "taroflavoured:golden_carrot_cupcake", "minecraft:diamond_block", TaroFlavoured.FAVOUR_BUDAI));
+        recipes.add(recipe(3, "taroflavoured:opal_earrings", "taroflavoured:tunisian_barb", "minecraft:enchanted_golden_apple", "minecraft:wildflowers", "taroflavoured:wooden_cross", TaroFlavoured.FAVOUR_COSANZEANA));
+        recipes.add(recipe(3, "create:engineers_goggles", "minecraft:saddle", "mounts_of_mayhem:netherite_spear", "minecraft:lead", "minecraft:honeycomb", TaroFlavoured.FAVOUR_LUG));
         recipes.add(recipe(3, "minecraft:loom", "minecraft:potato", "minecraft:wither_rose", "minecraft:phantom_membrane", "minecraft:azalea_leaves", TaroFlavoured.FAVOUR_ROSA_DE_LIMA));
         recipes.add(recipe(3, "minecraft:any_carpet", TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA));
 

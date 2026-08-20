@@ -1,32 +1,52 @@
 package com.taroflavoured;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A recipe for the custom enchanting-table interface.
- *
- * Book + benzene + evil eye -> Envious Book (Tier 0)
- * Envious Book + favour ingredients -> Favour
- */
-public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
-    private static final List<FavourRecipe> RECIPES = createRecipes();
+/** A Favour recipe displayed by the vanilla recipe-book UI and used by the Favour menu. */
+public final class FavourRecipe implements CraftingRecipe {
+    private final int tier;
+    private final String group;
+    private final NonNullList<Ingredient> ingredients;
+    private final ItemStack result;
 
-    public boolean matches(int availableTier, ItemStack input, List<ItemStack> suppliedIngredients) {
-        if (availableTier < tier) return false;
-        if (!input.is(net.minecraft.world.item.Items.BOOK) && !TaroFlavoured.isEnviousBook(input)) return false;
-        if (suppliedIngredients.size() < ingredients.length) return false;
+    public FavourRecipe(int tier, String group, List<Ingredient> ingredients, ItemStack result) {
+        this.tier = tier;
+        this.group = group;
+        this.ingredients = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
+        for (int i = 0; i < ingredients.size(); i++) this.ingredients.set(i, ingredients.get(i));
+        this.result = result;
+    }
 
-        boolean[] used = new boolean[ingredients.length];
-        for (ItemStack supplied : suppliedIngredients) {
+    public int tier() { return tier; }
+
+    @Override
+    public boolean matches(CraftingInput input, Level level) {
+        if (input.size() != 6) return false;
+        boolean[] used = new boolean[ingredients.size()];
+        int nonEmpty = 0;
+        for (int slot = 0; slot < input.size(); slot++) {
+            ItemStack supplied = input.getItem(slot);
             if (supplied.isEmpty()) continue;
+            nonEmpty++;
             boolean matched = false;
-            for (int i = 0; i < ingredients.length; i++) {
-                if (!used[i] && matchesIngredient(ingredients[i], supplied)) {
+            for (int i = 0; i < ingredients.size(); i++) {
+                if (!used[i] && ingredients.get(i).test(supplied)) {
                     used[i] = true;
                     matched = true;
                     break;
@@ -34,82 +54,52 @@ public record FavourRecipe(int tier, String[] ingredients, ItemStack favour) {
             }
             if (!matched) return false;
         }
-
+        if (nonEmpty != ingredients.size()) return false;
         for (boolean matched : used) if (!matched) return false;
         return true;
     }
 
-    private static boolean matchesIngredient(String ingredientId, ItemStack stack) {
-        if (ingredientId.equals("minecraft:any_carpet")) {
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-            return id.getNamespace().equals("minecraft") && id.getPath().endsWith("_carpet");
-        }
-        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(ingredientId))
-                .map(stack::is)
-                .orElse(false);
+    @Override
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) { return result.copy(); }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) { return width >= 6 && height >= 1; }
+
+    @Override
+    public String getGroup() { return group; }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() { return ingredients; }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) { return result.copy(); }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() { return TaroFlavoured.FAVOUR_RECIPE_SERIALIZER.get(); }
+
+    @Override
+    public RecipeType<?> getType() { return TaroFlavoured.FAVOUR_RECIPE_TYPE.get(); }
+
+    @Override
+    public ItemStack getToastSymbol() { return new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()); }
+
+    public static class Serializer implements RecipeSerializer<FavourRecipe> {
+        public static final MapCodec<FavourRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.INT.fieldOf("tier").forGetter(FavourRecipe::tier),
+                Codec.STRING.optionalFieldOf("group", "").forGetter(FavourRecipe::getGroup),
+                Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").forGetter(recipe -> recipe.ingredients),
+                ItemStack.SINGLE_ITEM_CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
+        ).apply(instance, FavourRecipe::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, FavourRecipe> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT, FavourRecipe::tier,
+                ByteBufCodecs.STRING_UTF8, FavourRecipe::getGroup,
+                Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), recipe -> recipe.ingredients,
+                ItemStack.STREAM_CODEC, recipe -> recipe.result,
+                FavourRecipe::new
+        );
+
+        @Override public MapCodec<FavourRecipe> codec() { return CODEC; }
+        @Override public StreamCodec<RegistryFriendlyByteBuf, FavourRecipe> streamCodec() { return STREAM_CODEC; }
     }
-
-    public static FavourRecipe find(int tier, ItemStack input, List<ItemStack> ingredients) {
-        // Tier 0: Book + exactly one Benzene and one Evil Eye -> Envious Book.
-        if (input.is(net.minecraft.world.item.Items.BOOK)) {
-            int nonEmpty = 0;
-            boolean benzene = false;
-            boolean evilEye = false;
-            for (ItemStack ingredient : ingredients) {
-                if (ingredient.isEmpty()) continue;
-                nonEmpty++;
-                if (ingredient.is(TaroFlavoured.BENZENE.get())) benzene = true;
-                else if (ingredient.is(TaroFlavoured.EVIL_EYE.get())) evilEye = true;
-                else return null;
-            }
-            if (nonEmpty == 2 && benzene && evilEye) {
-                return new FavourRecipe(0,
-                        new String[]{"taroflavoured:benzene", "taroflavoured:evil_eye"}, ItemStack.EMPTY);
-            }
-        }
-
-        for (FavourRecipe recipe : RECIPES) {
-            if (recipe.matches(tier, input, ingredients)) return recipe;
-        }
-        return null;
-    }
-
-    private static List<FavourRecipe> createRecipes() {
-        List<FavourRecipe> recipes = new ArrayList<>();
-
-        // Tier 1
-        recipes.add(recipe(1, "minecraft:spider_eye", "minecraft:cobweb", "minecraft:fermented_spider_eye", TaroFlavoured.FAVOUR_DIABOBA));
-        recipes.add(recipe(1, "minecraft:snow_block", "minecraft:powder_snow_bucket", "minecraft:blue_ice", TaroFlavoured.FAVOUR_MARZANNA));
-        recipes.add(recipe(1, "minecraft:iron_sword", "taroflavoured:mead", "minecraft:goat_horn", TaroFlavoured.FAVOUR_SIEGFRIED));
-        recipes.add(recipe(1, "taroflavoured:catfish", "minecraft:bricks", "minecraft:phantom_membrane", TaroFlavoured.FAVOUR_MELUSINE));
-        recipes.add(recipe(1, "minecraft:soul_sand", "minecraft:bone", "minecraft:echo_shard", TaroFlavoured.FAVOUR_ANKOU));
-        recipes.add(recipe(1, "minecraft:leather_boots", "minecraft:filled_map", "minecraft:boat", TaroFlavoured.FAVOUR_ENKIDU));
-
-        // Tier 2
-        recipes.add(recipe(2, "minecraft:lightning_rod", "taroflavoured:mournful_clay_statue", "minecraft:firework_star", "mounts_of_mayhem:copper_spear", TaroFlavoured.FAVOUR_ILLAPA));
-        recipes.add(recipe(2, "minecraft:golden_pickaxe", "create:limestone", "minecraft:bamboo", "minecraft:golden_hoe", TaroFlavoured.FAVOUR_SON_TINH));
-        recipes.add(recipe(2, "minecraft:wind_charge", "taroflavoured:cheerful_clay_statue", "minecraft:phantom_membrane", "create:windmill_sail", TaroFlavoured.FAVOUR_WAYRA));
-        recipes.add(recipe(2, "minecraft:emerald_block", "minecraft:spectral_arrow", "taroflavoured:compound_bow", "minecraft:magma_block", TaroFlavoured.FAVOUR_HOU_YI));
-        recipes.add(recipe(2, "minecraft:axolotl_bucket", "mounts_of_mayhem:stone_spear", "minecraft:wither_skeleton_skull", "minecraft:jungle_explorer_map", TaroFlavoured.FAVOUR_AH_PUCH));
-        recipes.add(recipe(2, "minecraft:spore_blossom", "taroflavoured:bronze_laurel", "taroflavoured:compound_bow", "minecraft:sniffer_egg", TaroFlavoured.FAVOUR_JUMONG));
-        recipes.add(recipe(2, "minecraft:mourner_pottery_sherd", "taroflavoured:nazar", "mr_magic_mirrors:chaos_mirror", "minecraft:pufferfish", TaroFlavoured.FAVOUR_AISHA));
-        recipes.add(recipe(2, "minecraft:red_mushroom", "minecraft:music_disc_relic", "minecraft:amethyst_shard", "taroflavoured:glow_jam", TaroFlavoured.FAVOUR_MARGOT));
-
-        // Tier 3
-        recipes.add(recipe(3, "minecraft:packed_mud", "minecraft:prismarine_shard", "minecraft:dragon_breath", "minecraft:feather", "minecraft:glass", TaroFlavoured.FAVOUR_AMARU));
-        recipes.add(recipe(3, "minecraft:fire_coral", "minecraft:turtle_scute", "minecraft:tide_armor_trim_smithing_template", "minecraft:nautilus_shell", "minecraft:horn_coral", TaroFlavoured.FAVOUR_THUY_TINH));
-        recipes.add(recipe(3, "minecraft:gold_block", "minecraft:feather", "taroflavoured:divine_crystal", "minecraft:sunflower", "minecraft:magma_block", TaroFlavoured.FAVOUR_SAMJOK_O));
-        recipes.add(recipe(3, "minecraft:emerald_block", "taroflavoured:golden_apple_empanada", "taroflavoured:honey_ginger_tea", "taroflavoured:golden_carrot_cupcake", "minecraft:diamond_block", TaroFlavoured.FAVOUR_BUDAI));
-        recipes.add(recipe(3, "taroflavoured:opal_earrings", "taroflavoured:tunisian_barb", "minecraft:enchanted_golden_apple", "minecraft:wildflowers", "taroflavoured:wooden_cross", TaroFlavoured.FAVOUR_COSANZEANA));
-        recipes.add(recipe(3, "create:engineers_goggles", "minecraft:saddle", "mounts_of_mayhem:netherite_spear", "minecraft:lead", "minecraft:honeycomb", TaroFlavoured.FAVOUR_LUG));
-        recipes.add(recipe(3, "minecraft:loom", "minecraft:potato", "minecraft:wither_rose", "minecraft:phantom_membrane", "minecraft:azalea_leaves", TaroFlavoured.FAVOUR_ROSA_DE_LIMA));
-        recipes.add(recipe(3, "minecraft:any_carpet", TaroFlavoured.FAVOUR_SIDI_AMAR_BOUSSENA));
-
-        return List.copyOf(recipes);
-    }
-
-    private static FavourRecipe recipe(int tier, String ingredient, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{ingredient}, new ItemStack(result.get())); }
-    private static FavourRecipe recipe(int tier, String a, String b, String c, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c}, new ItemStack(result.get())); }
-    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d}, new ItemStack(result.get())); }
-    private static FavourRecipe recipe(int tier, String a, String b, String c, String d, String e, net.neoforged.neoforge.registries.DeferredItem<net.minecraft.world.item.Item> result) { return new FavourRecipe(tier, new String[]{a, b, c, d, e}, new ItemStack(result.get())); }
 }

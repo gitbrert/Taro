@@ -16,7 +16,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
     private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
             TaroFlavoured.MOD_ID, "textures/gui/enchanting_table.png");
 
-    private final FavourRecipeBookComponent recipeBookComponent = new FavourRecipeBookComponent();
+    private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
     private boolean widthTooNarrow;
 
     public FavourScreen(FavourMenu menu, Inventory inventory, Component title) {
@@ -122,6 +122,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
     }
 
     public RecipeBookComponent getRecipeBookComponent() {
-        return this.recipeBookComponent;
+        return recipeBookComponent;
     }
 }

@@ -180,7 +180,16 @@ public class FavourMenu extends RecipeBookMenu<CraftingInput, FavourRecipe> {
         return source;
     }
 
-    @Override public void removed(Player player) { super.removed(player); container.stopOpen(player); if (!player.level().isClientSide) clearContainer(player, container); }
+    @Override public void removed(Player player) {
+        // Never leave a generated result in the container when the menu is closed.
+        // clearContainer() would otherwise drop both the untouched inputs and the
+        // already-generated output, duplicating the recipe result.
+        container.setItem(OUTPUT_SLOT, ItemStack.EMPTY);
+        super.removed(player);
+        container.stopOpen(player);
+        if (!player.level().isClientSide) clearContainer(player, container);
+    }
+
     @Override public void broadcastChanges() { access.execute((level, pos) -> data.set(0, calculateTier(level, pos))); updateResult(); super.broadcastChanges(); }
 
     private static class BookInputSlot extends Slot {

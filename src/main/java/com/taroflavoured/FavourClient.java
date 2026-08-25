@@ -1,12 +1,10 @@
 package com.taroflavoured;
 
-import net.minecraft.client.RecipeBookCategories;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRecipeBookCategoriesEvent;
-import net.neoforged.neoforge.client.event.lifecycle.FMLClientSetupEvent;
 
 @EventBusSubscriber(modid = TaroFlavoured.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class FavourClient {
@@ -21,10 +19,6 @@ public final class FavourClient {
     @SubscribeEvent
     public static void registerRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
         // Temporarily disabled while inspecting the transformed RecipeBookCategories metadata.
-    }
-
-    @SubscribeEvent
-    public static void diagnostic(FMLClientSetupEvent event) {
         RecipeBookCategoryDiagnostic.print();
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +16,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.client.RecipeBookManager;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements RecipeUpdateListener {
     private static final int RECIPE_BOOK_WIDTH_THRESHOLD = 379;
@@ -68,10 +73,50 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         if (this.minecraft == null || this.minecraft.player == null || this.minecraft.level == null) return;
 
         ClientRecipeBook book = this.minecraft.player.getRecipeBook();
+        List<RecipeHolder<FavourRecipe>> recipes = this.minecraft.level.getRecipeManager()
+                .getAllRecipesFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get());
+
+        // ClientRecipeBook's normal setup does not reliably populate a custom enum-extension
+        // category in the Connector environment. Build the same RecipeCollection explicitly and
+        // install it into the book so RecipeBookComponent can consume it normally.
         book.setupCollections(
                 this.minecraft.level.getRecipeManager().getRecipes(),
                 this.minecraft.level.registryAccess()
         );
+
+        if (recipes.isEmpty()) return;
+
+        RecipeBookCategories category = RecipeBookCategories.valueOf("TAROFLAVOURED_FAVOURS");
+        RecipeCollection collection = new RecipeCollection(
+                this.minecraft.level.registryAccess(),
+                new ArrayList<>(recipes)
+        );
+        collection.initialize(book);
+
+        try {
+            Field collectionsByTabField = ClientRecipeBook.class.getDeclaredField("collectionsByTab");
+            collectionsByTabField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Map<RecipeBookCategories, List<RecipeCollection>> collectionsByTab =
+                    (Map<RecipeBookCategories, List<RecipeCollection>>) collectionsByTabField.get(book);
+
+            Map<RecipeBookCategories, List<RecipeCollection>> updated = new HashMap<>(collectionsByTab);
+            updated.put(category, List.of(collection));
+            collectionsByTabField.set(book, Map.copyOf(updated));
+
+            Field allCollectionsField = ClientRecipeBook.class.getDeclaredField("allCollections");
+            allCollectionsField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            List<RecipeCollection> allCollections = (List<RecipeCollection>) allCollectionsField.get(book);
+
+            List<RecipeCollection> updatedAll = new ArrayList<>(allCollections);
+            updatedAll.removeIf(existing -> existing.getRecipes().stream().anyMatch(recipe ->
+                    recipe.value().getType() == TaroFlavoured.FAVOUR_RECIPE_TYPE.get()));
+            updatedAll.add(collection);
+            allCollectionsField.set(book, List.copyOf(updatedAll));
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Unable to install Taro Favour recipe-book collection", exception);
+        }
     }
 
     private void diagnoseRecipeBook() {

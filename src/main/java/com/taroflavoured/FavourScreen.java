@@ -89,6 +89,10 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
                 new ArrayList<>(recipes)
         );
 
+        // A manually-created RecipeCollection starts with an empty known set. The normal
+        // ClientRecipeBook setup would populate this, so do the same for our custom collection.
+        collection.updateKnownRecipes(book);
+
         try {
             Field collectionsByTabField = ClientRecipeBook.class.getDeclaredField("collectionsByTab");
             collectionsByTabField.setAccessible(true);

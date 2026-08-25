@@ -24,9 +24,9 @@ public final class FavourClientRecipeBook extends ClientRecipeBook {
             favourBook.add(recipe);
         }
 
-        List<RecipeHolder<?>> genericRecipes = List.copyOf(recipes);
-        favourBook.setupCollections(genericRecipes, registryAccess);
-        this.favourCollections = List.copyOf(favourBook.getCollection(RecipeBookCategories.CRAFTING_MISC));
+        RecipeCollection collection = new RecipeCollection(registryAccess, List.copyOf(recipes));
+        collection.updateKnownRecipes(favourBook);
+        this.favourCollections = List.of(collection);
     }
 
     @Override

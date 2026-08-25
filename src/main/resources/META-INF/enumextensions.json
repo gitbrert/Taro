@@ -3,7 +3,7 @@
     {
       "enum": "net/minecraft/client/RecipeBookCategories",
       "name": "TAROFLAVOURED_FAVOURS",
-      "constructor": "([Lnet/minecraft/world/item/ItemStack;)V",
+      "constructor": "(Ljava/util/function/Supplier;)V",
       "parameters": {
         "class": "com/taroflavoured/FavourRecipeBookEnumParams",
         "field": "FAVOUR_CATEGORY"

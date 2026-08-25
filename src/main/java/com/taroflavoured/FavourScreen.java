@@ -45,7 +45,8 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
                 button -> {
                     this.recipeBookComponent.initVisuals();
                     this.recipeBookComponent.toggleVisibility();
-                    this.init(this.minecraft, this.width, this.height);
+                    this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
+                    this.topPos = (this.height - this.imageHeight) / 2;
                 }
         ));
     }

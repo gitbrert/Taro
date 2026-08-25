@@ -21,7 +21,7 @@ public final class FavourClientRecipeBook extends ClientRecipeBook {
         ClientRecipeBook favourBook = new ClientRecipeBook();
         favourBook.setBookSettings(source.getBookSettings());
         for (RecipeHolder<FavourRecipe> recipe : recipes) {
-            favourBook.add(recipe.id());
+            favourBook.add(recipe);
         }
 
         List<RecipeHolder<?>> genericRecipes = List.copyOf(recipes);

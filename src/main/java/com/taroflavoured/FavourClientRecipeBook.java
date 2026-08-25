@@ -4,6 +4,7 @@ import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,8 +19,7 @@ public final class FavourClientRecipeBook extends ClientRecipeBook {
             add(recipe.id());
         }
 
-        setupCollections(recipes.stream()
-                .map(recipe -> (RecipeHolder<?>) recipe)
-                .toList(), registryAccess);
+        List<RecipeHolder<?>> genericRecipes = new ArrayList<>(recipes);
+        setupCollections(genericRecipes, registryAccess);
     }
 }

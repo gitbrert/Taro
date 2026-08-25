@@ -63,19 +63,16 @@ public final class FavourRecipe implements CraftingRecipe {
 
     /**
      * Normal ingredients retain vanilla Ingredient matching. A filled-map ingredient is
-     * additionally treated as a Jungle Explorer Map ingredient when the supplied map has
-     * the vanilla jungle-temple exploration decoration.
+     * treated as the Jungle Explorer Map ingredient used by the Ah Puch favour, because
+     * 1.21.1 represents explorer maps as minecraft:filled_map plus map-decoration data.
      */
     private boolean ingredientMatches(Ingredient ingredient, ItemStack supplied) {
-        if (ingredient.test(supplied)) return true;
-
         if (supplied.is(Items.FILLED_MAP)
-                && ingredient.test(new ItemStack(Items.FILLED_MAP))
-                && JungleExplorerMapPredicate.matches(supplied)) {
-            return true;
+                && ingredient.test(new ItemStack(Items.FILLED_MAP))) {
+            return JungleExplorerMapPredicate.matches(supplied);
         }
 
-        return false;
+        return ingredient.test(supplied);
     }
 
     @Override

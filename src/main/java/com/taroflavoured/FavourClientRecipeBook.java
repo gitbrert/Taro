@@ -13,27 +13,29 @@ import java.util.List;
  * It contains only the Favour recipes supplied by the component.
  */
 public final class FavourClientRecipeBook extends ClientRecipeBook {
-    private final RecipeCollection favourCollection;
+    private final List<RecipeCollection> favourCollections;
 
     public FavourClientRecipeBook(ClientRecipeBook source, RegistryAccess registryAccess, List<RecipeHolder<FavourRecipe>> recipes) {
         setBookSettings(source.getBookSettings());
 
+        ClientRecipeBook favourBook = new ClientRecipeBook();
+        favourBook.setBookSettings(source.getBookSettings());
         for (RecipeHolder<FavourRecipe> recipe : recipes) {
-            add(recipe.id());
+            favourBook.add(recipe.id());
         }
 
         List<RecipeHolder<?>> genericRecipes = List.copyOf(recipes);
-        this.favourCollection = new RecipeCollection(registryAccess, genericRecipes);
-        this.favourCollection.initialize(this);
+        favourBook.setupCollections(genericRecipes, registryAccess);
+        this.favourCollections = List.copyOf(favourBook.getCollection(RecipeBookCategories.CRAFTING_MISC));
     }
 
     @Override
     public List<RecipeCollection> getCollection(RecipeBookCategories category) {
-        return category == RecipeBookCategories.CRAFTING_MISC ? List.of(favourCollection) : List.of();
+        return category == RecipeBookCategories.CRAFTING_MISC ? favourCollections : List.of();
     }
 
     @Override
     public List<RecipeCollection> getCollections() {
-        return List.of(favourCollection);
+        return favourCollections;
     }
 }

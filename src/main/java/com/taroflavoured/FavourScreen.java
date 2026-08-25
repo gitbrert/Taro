@@ -17,6 +17,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             TaroFlavoured.MOD_ID, "textures/gui/enchanting_table.png");
 
     private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
+    private ImageButton recipeBookButton;
     private boolean widthTooNarrow;
 
     public FavourScreen(FavourMenu menu, Inventory inventory, Component title) {
@@ -36,7 +37,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.topPos = (this.height - this.imageHeight) / 2;
 
-        this.addRenderableWidget(new ImageButton(
+        this.recipeBookButton = new ImageButton(
                 this.leftPos + 14,
                 this.topPos + 17,
                 20,
@@ -47,8 +48,18 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
                     this.recipeBookComponent.toggleVisibility();
                     this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
                     this.topPos = (this.height - this.imageHeight) / 2;
+                    positionRecipeBookButton();
                 }
-        ));
+        );
+        this.addRenderableWidget(this.recipeBookButton);
+        positionRecipeBookButton();
+    }
+
+    private void positionRecipeBookButton() {
+        if (this.recipeBookButton != null) {
+            this.recipeBookButton.setX(this.leftPos + 14);
+            this.recipeBookButton.setY(this.topPos + 17);
+        }
     }
 
     @Override
@@ -114,6 +125,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
     public void containerTick() {
         super.containerTick();
         this.recipeBookComponent.tick();
+        positionRecipeBookButton();
     }
 
     @Override

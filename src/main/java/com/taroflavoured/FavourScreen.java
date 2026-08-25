@@ -84,14 +84,18 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         if (recipes.isEmpty()) return;
 
         RecipeBookCategories category = RecipeBookCategories.valueOf("TAROFLAVOURED_FAVOURS");
-        RecipeCollection collection = new RecipeCollection(
-                this.minecraft.level.registryAccess(),
-                new ArrayList<>(recipes)
-        );
 
-        // A manually-created RecipeCollection starts with an empty known set. The normal
-        // ClientRecipeBook setup would populate this, so do the same for our custom collection.
-        collection.updateKnownRecipes(book);
+        // RecipeCollection represents one recipe-book cell. Build one collection per
+        // favour so different favours are separate entries rather than variants of one entry.
+        List<RecipeCollection> favourCollections = new ArrayList<>();
+        for (RecipeHolder<FavourRecipe> recipe : recipes) {
+            RecipeCollection collection = new RecipeCollection(
+                    this.minecraft.level.registryAccess(),
+                    List.of(recipe)
+            );
+            collection.updateKnownRecipes(book);
+            favourCollections.add(collection);
+        }
 
         try {
             Field collectionsByTabField = ClientRecipeBook.class.getDeclaredField("collectionsByTab");
@@ -101,7 +105,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
                     (Map<RecipeBookCategories, List<RecipeCollection>>) collectionsByTabField.get(book);
 
             Map<RecipeBookCategories, List<RecipeCollection>> updated = new HashMap<>(collectionsByTab);
-            updated.put(category, List.of(collection));
+            updated.put(category, List.copyOf(favourCollections));
             collectionsByTabField.set(book, Map.copyOf(updated));
 
             Field allCollectionsField = ClientRecipeBook.class.getDeclaredField("allCollections");
@@ -112,10 +116,10 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             List<RecipeCollection> updatedAll = new ArrayList<>(allCollections);
             updatedAll.removeIf(existing -> existing.getRecipes().stream().anyMatch(recipe ->
                     recipe.value().getType() == TaroFlavoured.FAVOUR_RECIPE_TYPE.get()));
-            updatedAll.add(collection);
+            updatedAll.addAll(favourCollections);
             allCollectionsField.set(book, List.copyOf(updatedAll));
         } catch (ReflectiveOperationException exception) {
-            throw new IllegalStateException("Unable to install Taro Favour recipe-book collection", exception);
+            throw new IllegalStateException("Unable to install Taro Favour recipe-book collections", exception);
         }
     }
 

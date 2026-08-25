@@ -2,8 +2,11 @@ package com.taroflavoured;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -31,8 +34,25 @@ public final class FavourRecipe implements CraftingRecipe {
         this.tier = tier;
         this.group = group;
         this.ingredients = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
-        for (int i = 0; i < ingredients.size(); i++) this.ingredients.set(i, ingredients.get(i));
+        for (int i = 0; i < ingredients.size(); i++) {
+            this.ingredients.set(i, expandEnviousBookIngredient(ingredients.get(i)));
+        }
         this.result = result;
+    }
+
+    private static Ingredient expandEnviousBookIngredient(Ingredient ingredient) {
+        if (!ingredient.test(new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()))) return ingredient;
+
+        ItemStack craftedBook = new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get());
+        var bindingCurse = BuiltInRegistries.ENCHANTMENT.getHolderOrThrow(Enchantments.BINDING_CURSE);
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(bindingCurse, 1);
+        craftedBook.set(net.minecraft.core.component.DataComponents.ENCHANTMENTS, enchantments.toImmutable());
+
+        // StackedContents uses ItemStack stacking IDs, which include components. Include
+        // both the plain recipe-book form and the actual crafted form so the vanilla
+        // recipe-book craftability calculation recognizes the crafted Envious Book.
+        return Ingredient.ofStacks(new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()), craftedBook);
     }
 
     public int tier() { return tier; }

@@ -80,7 +80,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         if (!recipes.isEmpty()) {
             RecipeHolder<FavourRecipe> recipe = recipes.get(0);
             System.out.println("firstRecipe=" + recipe.id());
-            System.out.println("firstRecipeCategory=" + RecipeBookManager.findCategories(recipe.value().getType(), recipe));
+            System.out.println("firstRecipeCategory=" + RecipeBookManager.findCategories(TaroFlavoured.FAVOUR_RECIPE_TYPE.get(), recipe));
             System.out.println("firstRecipeKnown=" + book.contains(recipe));
         }
         System.out.println("=== End Taro diagnostic ===");

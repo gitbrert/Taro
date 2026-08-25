@@ -31,6 +31,13 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
     private ImageButton recipeBookButton;
     private boolean widthTooNarrow;
 
+    // The player's ClientRecipeBook is shared by every recipe-book-enabled menu. Keep an
+    // exact snapshot of its collections so the temporary Favour collections cannot leak
+    // into crafting tables, furnaces, etc.
+    private Map<RecipeBookCategories, List<RecipeCollection>> savedCollectionsByTab;
+    private List<RecipeCollection> savedAllCollections;
+    private ClientRecipeBook savedRecipeBook;
+
     public FavourScreen(FavourMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.imageWidth = 176;
@@ -73,47 +80,59 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         if (this.minecraft == null || this.minecraft.player == null || this.minecraft.level == null) return;
 
         ClientRecipeBook book = this.minecraft.player.getRecipeBook();
-        List<RecipeHolder<FavourRecipe>> recipes = this.minecraft.level.getRecipeManager()
-                .getAllRecipesFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get());
-
-        book.setupCollections(
-                this.minecraft.level.getRecipeManager().getRecipes(),
-                this.minecraft.level.registryAccess()
-        );
-
-        if (recipes.isEmpty()) return;
-
-        RecipeBookCategories category = RecipeBookCategories.valueOf("TAROFLAVOURED_FAVOURS");
-
-        // RecipeCollection represents one recipe-book cell. Build one collection per
-        // favour so different favours are separate entries rather than variants of one entry.
-        List<RecipeCollection> favourCollections = new ArrayList<>();
-        for (RecipeHolder<FavourRecipe> recipe : recipes) {
-            RecipeCollection collection = new RecipeCollection(
-                    this.minecraft.level.registryAccess(),
-                    List.of(recipe)
-            );
-            collection.updateKnownRecipes(book);
-            favourCollections.add(collection);
-        }
 
         try {
             Field collectionsByTabField = ClientRecipeBook.class.getDeclaredField("collectionsByTab");
             collectionsByTabField.setAccessible(true);
             @SuppressWarnings("unchecked")
-            Map<RecipeBookCategories, List<RecipeCollection>> collectionsByTab =
+            Map<RecipeBookCategories, List<RecipeCollection>> currentCollectionsByTab =
                     (Map<RecipeBookCategories, List<RecipeCollection>>) collectionsByTabField.get(book);
-
-            Map<RecipeBookCategories, List<RecipeCollection>> updated = new HashMap<>(collectionsByTab);
-            updated.put(category, List.copyOf(favourCollections));
-            collectionsByTabField.set(book, Map.copyOf(updated));
 
             Field allCollectionsField = ClientRecipeBook.class.getDeclaredField("allCollections");
             allCollectionsField.setAccessible(true);
             @SuppressWarnings("unchecked")
-            List<RecipeCollection> allCollections = (List<RecipeCollection>) allCollectionsField.get(book);
+            List<RecipeCollection> currentAllCollections =
+                    (List<RecipeCollection>) allCollectionsField.get(book);
 
-            List<RecipeCollection> updatedAll = new ArrayList<>(allCollections);
+            // Snapshot only once for this screen instance. A later recipesUpdated() must
+            // not replace the snapshot with our already-modified Favour state.
+            if (this.savedRecipeBook == null) {
+                this.savedRecipeBook = book;
+                this.savedCollectionsByTab = new HashMap<>(currentCollectionsByTab);
+                this.savedAllCollections = new ArrayList<>(currentAllCollections);
+            }
+
+            List<RecipeHolder<FavourRecipe>> recipes = this.minecraft.level.getRecipeManager()
+                    .getAllRecipesFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get());
+            if (recipes.isEmpty()) return;
+
+            book.setupCollections(
+                    this.minecraft.level.getRecipeManager().getRecipes(),
+                    this.minecraft.level.registryAccess()
+            );
+
+            RecipeBookCategories category = RecipeBookCategories.valueOf("TAROFLAVOURED_FAVOURS");
+            List<RecipeCollection> favourCollections = new ArrayList<>();
+            for (RecipeHolder<FavourRecipe> recipe : recipes) {
+                RecipeCollection collection = new RecipeCollection(
+                        this.minecraft.level.registryAccess(),
+                        List.of(recipe)
+                );
+                collection.updateKnownRecipes(book);
+                favourCollections.add(collection);
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<RecipeBookCategories, List<RecipeCollection>> rebuiltCollectionsByTab =
+                    (Map<RecipeBookCategories, List<RecipeCollection>>) collectionsByTabField.get(book);
+            Map<RecipeBookCategories, List<RecipeCollection>> updated = new HashMap<>(rebuiltCollectionsByTab);
+            updated.put(category, List.copyOf(favourCollections));
+            collectionsByTabField.set(book, Map.copyOf(updated));
+
+            @SuppressWarnings("unchecked")
+            List<RecipeCollection> rebuiltAllCollections =
+                    (List<RecipeCollection>) allCollectionsField.get(book);
+            List<RecipeCollection> updatedAll = new ArrayList<>(rebuiltAllCollections);
             updatedAll.removeIf(existing -> existing.getRecipes().stream().anyMatch(recipe ->
                     recipe.value().getType() == TaroFlavoured.FAVOUR_RECIPE_TYPE.get()));
             updatedAll.addAll(favourCollections);
@@ -123,16 +142,24 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         }
     }
 
-    private void restoreVanillaRecipeBookCollections() {
-        if (this.minecraft == null || this.minecraft.player == null || this.minecraft.level == null) return;
+    private void restoreRecipeBookCollections() {
+        if (this.savedRecipeBook == null) return;
 
-        // setupRecipeBookCollections temporarily replaces the player's collection maps so
-        // RecipeBookComponent can display the custom Favour tab. Rebuild the normal maps
-        // when leaving this screen so other recipe-book menus retain their own collections.
-        this.minecraft.player.getRecipeBook().setupCollections(
-                this.minecraft.level.getRecipeManager().getRecipes(),
-                this.minecraft.level.registryAccess()
-        );
+        try {
+            Field collectionsByTabField = ClientRecipeBook.class.getDeclaredField("collectionsByTab");
+            collectionsByTabField.setAccessible(true);
+            collectionsByTabField.set(this.savedRecipeBook, Map.copyOf(this.savedCollectionsByTab));
+
+            Field allCollectionsField = ClientRecipeBook.class.getDeclaredField("allCollections");
+            allCollectionsField.setAccessible(true);
+            allCollectionsField.set(this.savedRecipeBook, List.copyOf(this.savedAllCollections));
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Unable to restore recipe-book collections", exception);
+        } finally {
+            this.savedRecipeBook = null;
+            this.savedCollectionsByTab = null;
+            this.savedAllCollections = null;
+        }
     }
 
     private void diagnoseRecipeBook() {
@@ -239,7 +266,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
 
     @Override
     public void removed() {
-        restoreVanillaRecipeBookCollections();
+        restoreRecipeBookCollections();
         super.removed();
     }
 

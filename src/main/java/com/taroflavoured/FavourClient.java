@@ -26,4 +26,9 @@ public final class FavourClient {
         event.registerBookCategories(RecipeBookType.CRAFTING, List.of(favourCategory));
         event.registerRecipeCategoryFinder(TaroFlavoured.FAVOUR_RECIPE_TYPE.get(), recipe -> favourCategory);
     }
+
+    @SubscribeEvent
+    public static void diagnostic(net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingIn event) {
+        RecipeBookCategoryDiagnostic.print();
+    }
 }

@@ -31,9 +31,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
     private ImageButton recipeBookButton;
     private boolean widthTooNarrow;
 
-    // The player's ClientRecipeBook is shared by every recipe-book-enabled menu. Keep an
-    // exact snapshot of its collections so the temporary Favour collections cannot leak
-    // into crafting tables, furnaces, etc.
     private Map<RecipeBookCategories, List<RecipeCollection>> savedCollectionsByTab;
     private List<RecipeCollection> savedAllCollections;
     private ClientRecipeBook savedRecipeBook;
@@ -94,8 +91,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             List<RecipeCollection> currentAllCollections =
                     (List<RecipeCollection>) allCollectionsField.get(book);
 
-            // Snapshot only once for this screen instance. A later recipesUpdated() must
-            // not replace the snapshot with our already-modified Favour state.
             if (this.savedRecipeBook == null) {
                 this.savedRecipeBook = book;
                 this.savedCollectionsByTab = new HashMap<>(currentCollectionsByTab);
@@ -213,6 +208,12 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             this.recipeBookComponent.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
+        // Vanilla recipe-book screens render the ghost recipe separately from the book.
+        // This is also what provides the missing-ingredient tooltip when a recipe is
+        // selected but the player does not have every ingredient.
+        this.recipeBookComponent.renderGhostRecipe(
+                guiGraphics, this.leftPos, this.topPos, this.widthTooNarrow, partialTick
+        );
         this.recipeBookComponent.renderTooltip(guiGraphics, this.leftPos, this.topPos, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }

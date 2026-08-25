@@ -9,6 +9,9 @@ displayName="Taro Flavoured"
 authors="Taro Flavoured"
 description='''A NeoForge 1.21.1 mod implementing the selected Taro Flavoured feature set.'''
 
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
 [[dependencies.taroflavoured]]
 modId="neoforge"
 type="required"

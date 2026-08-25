@@ -4,7 +4,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -48,7 +47,7 @@ public final class FavourRecipe implements CraftingRecipe {
             nonEmpty++;
             boolean matched = false;
             for (int i = 0; i < ingredients.size(); i++) {
-                if (!used[i] && ingredientMatches(ingredients.get(i), supplied)) {
+                if (!used[i] && ingredients.get(i).test(supplied)) {
                     used[i] = true;
                     matched = true;
                     break;
@@ -59,20 +58,6 @@ public final class FavourRecipe implements CraftingRecipe {
         if (nonEmpty != ingredients.size()) return false;
         for (boolean matched : used) if (!matched) return false;
         return true;
-    }
-
-    /**
-     * Normal ingredients retain vanilla Ingredient matching. A filled-map ingredient is
-     * treated as the Jungle Explorer Map ingredient used by the Ah Puch favour, because
-     * 1.21.1 represents explorer maps as minecraft:filled_map plus map-decoration data.
-     */
-    private boolean ingredientMatches(Ingredient ingredient, ItemStack supplied) {
-        if (supplied.is(Items.FILLED_MAP)
-                && ingredient.test(new ItemStack(Items.FILLED_MAP))) {
-            return JungleExplorerMapPredicate.matches(supplied);
-        }
-
-        return ingredient.test(supplied);
     }
 
     @Override

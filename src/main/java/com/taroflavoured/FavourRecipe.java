@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -47,7 +48,7 @@ public final class FavourRecipe implements CraftingRecipe {
             nonEmpty++;
             boolean matched = false;
             for (int i = 0; i < ingredients.size(); i++) {
-                if (!used[i] && ingredients.get(i).test(supplied)) {
+                if (!used[i] && ingredientMatches(ingredients.get(i), supplied)) {
                     used[i] = true;
                     matched = true;
                     break;
@@ -58,6 +59,23 @@ public final class FavourRecipe implements CraftingRecipe {
         if (nonEmpty != ingredients.size()) return false;
         for (boolean matched : used) if (!matched) return false;
         return true;
+    }
+
+    /**
+     * Normal ingredients retain vanilla Ingredient matching. A filled-map ingredient is
+     * additionally treated as a Jungle Explorer Map ingredient when the supplied map has
+     * the vanilla jungle-temple exploration decoration.
+     */
+    private boolean ingredientMatches(Ingredient ingredient, ItemStack supplied) {
+        if (ingredient.test(supplied)) return true;
+
+        if (supplied.is(Items.FILLED_MAP)
+                && ingredient.test(new ItemStack(Items.FILLED_MAP))
+                && JungleExplorerMapPredicate.matches(supplied)) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

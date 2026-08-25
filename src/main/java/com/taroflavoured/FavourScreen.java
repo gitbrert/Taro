@@ -123,6 +123,18 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         }
     }
 
+    private void restoreVanillaRecipeBookCollections() {
+        if (this.minecraft == null || this.minecraft.player == null || this.minecraft.level == null) return;
+
+        // setupRecipeBookCollections temporarily replaces the player's collection maps so
+        // RecipeBookComponent can display the custom Favour tab. Rebuild the normal maps
+        // when leaving this screen so other recipe-book menus retain their own collections.
+        this.minecraft.player.getRecipeBook().setupCollections(
+                this.minecraft.level.getRecipeManager().getRecipes(),
+                this.minecraft.level.registryAccess()
+        );
+    }
+
     private void diagnoseRecipeBook() {
         if (this.minecraft == null || this.minecraft.player == null || this.minecraft.level == null) return;
 
@@ -223,6 +235,12 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
     public void recipesUpdated() {
         setupRecipeBookCollections();
         this.recipeBookComponent.recipesUpdated();
+    }
+
+    @Override
+    public void removed() {
+        restoreVanillaRecipeBookCollections();
+        super.removed();
     }
 
     public RecipeBookComponent getRecipeBookComponent() {

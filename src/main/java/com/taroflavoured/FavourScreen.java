@@ -76,9 +76,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         List<RecipeHolder<FavourRecipe>> recipes = this.minecraft.level.getRecipeManager()
                 .getAllRecipesFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get());
 
-        // ClientRecipeBook's normal setup does not reliably populate a custom enum-extension
-        // category in the Connector environment. Build the same RecipeCollection explicitly and
-        // install it into the book so RecipeBookComponent can consume it normally.
         book.setupCollections(
                 this.minecraft.level.getRecipeManager().getRecipes(),
                 this.minecraft.level.registryAccess()
@@ -91,7 +88,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
                 this.minecraft.level.registryAccess(),
                 new ArrayList<>(recipes)
         );
-        collection.initialize(book);
 
         try {
             Field collectionsByTabField = ClientRecipeBook.class.getDeclaredField("collectionsByTab");

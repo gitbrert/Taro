@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -14,17 +13,6 @@ import java.util.List;
  * controls; only its recipe-book data source is replaced.
  */
 public final class FavourRecipeBookComponent extends RecipeBookComponent {
-    private static final Field BOOK_FIELD;
-
-    static {
-        try {
-            BOOK_FIELD = RecipeBookComponent.class.getDeclaredField("book");
-            BOOK_FIELD.setAccessible(true);
-        } catch (ReflectiveOperationException exception) {
-            throw new ExceptionInInitializerError(exception);
-        }
-    }
-
     @Override
     public void init(int width, int height, Minecraft minecraft, boolean widthTooNarrow, net.minecraft.world.inventory.RecipeBookMenu<?, ?> menu) {
         super.init(width, height, minecraft, widthTooNarrow, menu);
@@ -41,23 +29,19 @@ public final class FavourRecipeBookComponent extends RecipeBookComponent {
     }
 
     private void installFavourBook(Minecraft minecraft) {
-        if (minecraft.player == null || minecraft.level == null) {
-            return;
-        }
+        if (minecraft.player == null || minecraft.level == null) return;
 
         List<RecipeHolder<FavourRecipe>> recipes = minecraft.level.getRecipeManager()
-                .getAllRecipesFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get());
+                .getAllRecipesFor(TaroFlavoured.FAVOUR_RECIPE_TYPE.get())
+                .stream()
+                .filter(recipe -> TaroFlavoured.MOD_ID.equals(recipe.id().getNamespace())
+                        && recipe.id().getPath().startsWith("favour_"))
+                .toList();
 
-        ClientRecipeBook favourBook = new FavourClientRecipeBook(
+        this.book = new FavourClientRecipeBook(
                 minecraft.player.getRecipeBook(),
                 minecraft.level.registryAccess(),
                 recipes
         );
-
-        try {
-            BOOK_FIELD.set(this, favourBook);
-        } catch (IllegalAccessException exception) {
-            throw new IllegalStateException("Unable to install the Favour recipe book", exception);
-        }
     }
 }

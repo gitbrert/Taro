@@ -37,6 +37,15 @@ public final class FavourRecipe implements CraftingRecipe {
 
     public int tier() { return tier; }
 
+    private static boolean ingredientMatches(Ingredient ingredient, ItemStack supplied) {
+        // Envious Books are deliberately item-compatible with the recipe ingredient even
+        // though the crafted book carries the Binding Curse component.
+        if (ingredient.test(new ItemStack(TaroFlavoured.ENVIOUS_BOOK.get()))) {
+            return TaroFlavoured.isEnviousBook(supplied);
+        }
+        return ingredient.test(supplied);
+    }
+
     @Override
     public boolean matches(CraftingInput input, Level level) {
         boolean[] used = new boolean[ingredients.size()];
@@ -47,7 +56,7 @@ public final class FavourRecipe implements CraftingRecipe {
             nonEmpty++;
             boolean matched = false;
             for (int i = 0; i < ingredients.size(); i++) {
-                if (!used[i] && ingredients.get(i).test(supplied)) {
+                if (!used[i] && ingredientMatches(ingredients.get(i), supplied)) {
                     used[i] = true;
                     matched = true;
                     break;

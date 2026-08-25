@@ -18,6 +18,8 @@ public final class FavourClientRecipeBook extends ClientRecipeBook {
             add(recipe.id());
         }
 
-        setupCollections(recipes, registryAccess);
+        setupCollections(recipes.stream()
+                .map(recipe -> (RecipeHolder<?>) recipe)
+                .toList(), registryAccess);
     }
 }

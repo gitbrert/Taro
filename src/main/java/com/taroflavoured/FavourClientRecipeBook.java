@@ -1,10 +1,11 @@
 package com.taroflavoured;
 
 import net.minecraft.client.ClientRecipeBook;
+import net.minecraft.client.RecipeBookCategories;
+import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +13,8 @@ import java.util.List;
  * It contains only the Favour recipes supplied by the component.
  */
 public final class FavourClientRecipeBook extends ClientRecipeBook {
+    private final RecipeCollection favourCollection;
+
     public FavourClientRecipeBook(ClientRecipeBook source, RegistryAccess registryAccess, List<RecipeHolder<FavourRecipe>> recipes) {
         setBookSettings(source.getBookSettings());
 
@@ -19,7 +22,18 @@ public final class FavourClientRecipeBook extends ClientRecipeBook {
             add(recipe.id());
         }
 
-        List<RecipeHolder<?>> genericRecipes = new ArrayList<>(recipes);
-        setupCollections(genericRecipes, registryAccess);
+        List<RecipeHolder<?>> genericRecipes = List.copyOf(recipes);
+        this.favourCollection = new RecipeCollection(registryAccess, genericRecipes);
+        this.favourCollection.initialize(this);
+    }
+
+    @Override
+    public List<RecipeCollection> getCollection(RecipeBookCategories category) {
+        return category == RecipeBookCategories.CRAFTING_MISC ? List.of(favourCollection) : List.of();
+    }
+
+    @Override
+    public List<RecipeCollection> getCollections() {
+        return List.of(favourCollection);
     }
 }

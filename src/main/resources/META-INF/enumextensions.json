@@ -8,6 +8,15 @@
         "class": "com/taroflavoured/FavourRecipeBookEnumParams",
         "field": "FAVOUR_CATEGORY"
       }
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "TAROFLAVOURED_FAVOUR_BOOK",
+      "constructor": "()V",
+      "parameters": {
+        "class": "com/taroflavoured/FavourRecipeBookEnumParams",
+        "field": "FAVOUR_RECIPE_BOOK"
+      }
     }
   ]
 }

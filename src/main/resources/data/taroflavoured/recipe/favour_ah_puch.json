@@ -6,7 +6,7 @@
     {"item": "minecraft:axolotl_bucket"},
     {"item": "mounts_of_mayhem:stone_spear"},
     {"item": "minecraft:wither_skeleton_skull"},
-    {"item": "minecraft:filled_map"}
+    {"item": "minecraft:map"}
   ],
   "result": {"id": "taroflavoured:favour_ah_puch"}
 }

@@ -4,6 +4,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -31,6 +32,8 @@ public class TaroFlavoured {
             RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("favour", FavourRecipe.Serializer::new);
+
+    public static final RecipeBookType FAVOUR_RECIPE_BOOK = RecipeBookType.valueOf("TAROFLAVOURED_FAVOUR_BOOK");
 
     public static final DeferredItem<Item> DIVINE_FRAGMENT = ITEMS.register("divine_fragment", () -> new Item(new Item.Properties().rarity(Rarity.RARE).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
     public static final DeferredItem<Item> DIVINE_CRYSTAL = ITEMS.register("divine_crystal", () -> new Item(new Item.Properties().rarity(Rarity.RARE).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));

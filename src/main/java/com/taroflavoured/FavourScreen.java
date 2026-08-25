@@ -39,6 +39,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         super.init();
 
         this.widthTooNarrow = this.width < RECIPE_BOOK_WIDTH_THRESHOLD;
+        setupRecipeBookCollections();
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.topPos = (this.height - this.imageHeight) / 2;
@@ -61,6 +62,16 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         );
         this.addRenderableWidget(this.recipeBookButton);
         positionRecipeBookButton();
+    }
+
+    private void setupRecipeBookCollections() {
+        if (this.minecraft == null || this.minecraft.player == null || this.minecraft.level == null) return;
+
+        ClientRecipeBook book = this.minecraft.player.getRecipeBook();
+        book.setupCollections(
+                this.minecraft.level.getRecipeManager().getRecipes(),
+                this.minecraft.level.registryAccess()
+        );
     }
 
     private void diagnoseRecipeBook() {
@@ -161,6 +172,7 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
 
     @Override
     public void recipesUpdated() {
+        setupRecipeBookCollections();
         this.recipeBookComponent.recipesUpdated();
     }
 

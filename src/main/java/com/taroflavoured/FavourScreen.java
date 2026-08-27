@@ -177,9 +177,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         System.out.println("menuGrid=" + this.menu.getGridWidth() + "x" + this.menu.getGridHeight());
 
         try {
-            // Run the same private refresh that RecipeBookComponent uses before
-            // RecipeCollection.canCraft() is evaluated. This gives us the actual
-            // StackedContents object used by the vanilla recipe-book UI.
             Method updateStackedContents = RecipeBookComponent.class.getDeclaredMethod("updateStackedContents");
             updateStackedContents.setAccessible(true);
             updateStackedContents.invoke(this.recipeBookComponent);
@@ -195,15 +192,9 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             for (int i = 0; i < Math.min(collections.size(), recipes.size()); i++) {
                 RecipeCollection collection = collections.get(i);
                 RecipeHolder<?> recipe = recipes.get(i);
-                boolean canCraft = collection.canCraft(
-                        stackedContents,
-                        this.menu.getGridWidth(),
-                        this.menu.getGridHeight(),
-                        book
-                );
+                collection.canCraft(stackedContents, this.menu.getGridWidth(), this.menu.getGridHeight(), book);
                 System.out.println("recipe[" + i + "]=" + recipe.id());
                 System.out.println("recipe[" + i + "]_collectionRecipes=" + collection.getRecipes().size());
-                System.out.println("recipe[" + i + "]_canCraft=" + canCraft);
                 System.out.println("recipe[" + i + "]_isCraftable=" + collection.isCraftable(recipe));
                 System.out.println("recipe[" + i + "]_known=" + book.contains(recipe));
             }

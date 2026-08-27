@@ -50,6 +50,10 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         this.widthTooNarrow = this.width < RECIPE_BOOK_WIDTH_THRESHOLD;
         setupRecipeBookCollections();
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
+        // setupRecipeBookCollections() replaces the ClientRecipeBook collections after
+        // the normal recipe-book state has been established. Force the component to
+        // refresh its collection/craftability view against the current menu contents.
+        this.recipeBookComponent.recipesUpdated();
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.topPos = (this.height - this.imageHeight) / 2;
 
@@ -208,9 +212,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
             this.recipeBookComponent.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        // Vanilla recipe-book screens render the ghost recipe separately from the book.
-        // This is also what provides the missing-ingredient tooltip when a recipe is
-        // selected but the player does not have every ingredient.
         this.recipeBookComponent.renderGhostRecipe(
                 guiGraphics, this.leftPos, this.topPos, this.widthTooNarrow, partialTick
         );

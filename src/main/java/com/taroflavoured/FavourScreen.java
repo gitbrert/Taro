@@ -11,12 +11,14 @@ import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.client.RecipeBookManager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +52,6 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         this.widthTooNarrow = this.width < RECIPE_BOOK_WIDTH_THRESHOLD;
         setupRecipeBookCollections();
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-        // setupRecipeBookCollections() replaces the ClientRecipeBook collections after
-        // the normal recipe-book state has been established. Force the component to
-        // refresh its collection/craftability view against the current menu contents.
         this.recipeBookComponent.recipesUpdated();
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.topPos = (this.height - this.imageHeight) / 2;
@@ -175,6 +174,44 @@ public class FavourScreen extends AbstractContainerScreen<FavourMenu> implements
         System.out.println("registeredCategories=" + RecipeBookManager.getCustomCategoriesOrEmpty(TaroFlavoured.FAVOUR_RECIPE_BOOK));
         System.out.println("clientFavourRecipes=" + recipes.size());
         System.out.println("clientFavourCollections=" + book.getCollection(category).size());
+        System.out.println("menuGrid=" + this.menu.getGridWidth() + "x" + this.menu.getGridHeight());
+
+        try {
+            // Run the same private refresh that RecipeBookComponent uses before
+            // RecipeCollection.canCraft() is evaluated. This gives us the actual
+            // StackedContents object used by the vanilla recipe-book UI.
+            Method updateStackedContents = RecipeBookComponent.class.getDeclaredMethod("updateStackedContents");
+            updateStackedContents.setAccessible(true);
+            updateStackedContents.invoke(this.recipeBookComponent);
+
+            Field stackedContentsField = RecipeBookComponent.class.getDeclaredField("stackedContents");
+            stackedContentsField.setAccessible(true);
+            StackedContents stackedContents = (StackedContents) stackedContentsField.get(this.recipeBookComponent);
+
+            List<RecipeCollection> collections = book.getCollection(category);
+            System.out.println("stackedContentsRefresh=success");
+            System.out.println("stackedContentsRecipeCollections=" + collections.size());
+
+            for (int i = 0; i < Math.min(collections.size(), recipes.size()); i++) {
+                RecipeCollection collection = collections.get(i);
+                RecipeHolder<?> recipe = recipes.get(i);
+                boolean canCraft = collection.canCraft(
+                        stackedContents,
+                        this.menu.getGridWidth(),
+                        this.menu.getGridHeight(),
+                        book
+                );
+                System.out.println("recipe[" + i + "]=" + recipe.id());
+                System.out.println("recipe[" + i + "]_collectionRecipes=" + collection.getRecipes().size());
+                System.out.println("recipe[" + i + "]_canCraft=" + canCraft);
+                System.out.println("recipe[" + i + "]_isCraftable=" + collection.isCraftable(recipe));
+                System.out.println("recipe[" + i + "]_known=" + book.contains(recipe));
+            }
+        } catch (ReflectiveOperationException exception) {
+            System.out.println("stackedContentsDiagnosticError=" + exception);
+            exception.printStackTrace(System.out);
+        }
+
         if (!recipes.isEmpty()) {
             RecipeHolder<FavourRecipe> recipe = recipes.get(0);
             System.out.println("firstRecipe=" + recipe.id());

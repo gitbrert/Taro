@@ -19,6 +19,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.network.codec.StreamCodec;
 
 @net.neoforged.fml.common.Mod(TaroFlavoured.MOD_ID)
 public class TaroFlavoured {
@@ -36,7 +37,10 @@ public class TaroFlavoured {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("favour", FavourRecipe.Serializer::new);
     public static final DeferredHolder<IngredientType<?>, IngredientType<EnviousBookIngredient>> ENVIOUS_BOOK_INGREDIENT =
-            INGREDIENT_TYPES.register("envious_book", () -> new IngredientType<>(EnviousBookIngredient.CODEC));
+            INGREDIENT_TYPES.register("envious_book", () -> new IngredientType<>(
+                    EnviousBookIngredient.CODEC,
+                    StreamCodec.unit(new EnviousBookIngredient())
+            ));
 
     public static final RecipeBookType FAVOUR_RECIPE_BOOK = RecipeBookType.valueOf("TAROFLAVOURED_FAVOUR_BOOK");
 

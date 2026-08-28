@@ -8,7 +8,7 @@ import net.neoforged.neoforge.common.crafting.IngredientType;
 import java.util.stream.Stream;
 
 /** Recipe-book ingredient that accepts any Envious Book stack, including the crafted cursed version. */
-public final class EnviousBookIngredient implements ICustomIngredient {
+public record EnviousBookIngredient() implements ICustomIngredient {
     public static final MapCodec<EnviousBookIngredient> CODEC = MapCodec.unit(new EnviousBookIngredient());
 
     @Override

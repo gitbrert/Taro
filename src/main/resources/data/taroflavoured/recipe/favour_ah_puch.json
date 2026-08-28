@@ -2,7 +2,7 @@
   "type": "taroflavoured:favour",
   "tier": 2,
   "ingredients": [
-    {"item": "taroflavoured:envious_book"},
+    {"type": "taroflavoured:envious_book"},
     {"item": "minecraft:axolotl_bucket"},
     {"item": "mounts_of_mayhem:stone_spear"},
     {"item": "minecraft:wither_skeleton_skull"},

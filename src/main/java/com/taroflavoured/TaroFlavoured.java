@@ -14,9 +14,11 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @net.neoforged.fml.common.Mod(TaroFlavoured.MOD_ID)
 public class TaroFlavoured {
@@ -25,6 +27,7 @@ public class TaroFlavoured {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, MOD_ID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MOD_ID);
+    public static final DeferredRegister<IngredientType<?>> INGREDIENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.INGREDIENT_TYPES, MOD_ID);
 
     public static final DeferredHolder<MenuType<?>, MenuType<FavourMenu>> FAVOUR_MENU =
             MENUS.register("favour_enchanting", () -> IMenuTypeExtension.create(FavourMenu::new));
@@ -32,6 +35,8 @@ public class TaroFlavoured {
             RECIPE_TYPES.register("favour", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "favour")));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FavourRecipe>> FAVOUR_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("favour", FavourRecipe.Serializer::new);
+    public static final DeferredHolder<IngredientType<?>, IngredientType<EnviousBookIngredient>> ENVIOUS_BOOK_INGREDIENT =
+            INGREDIENT_TYPES.register("envious_book", () -> new IngredientType<>(EnviousBookIngredient.CODEC));
 
     public static final RecipeBookType FAVOUR_RECIPE_BOOK = RecipeBookType.valueOf("TAROFLAVOURED_FAVOUR_BOOK");
 
@@ -95,6 +100,7 @@ public class TaroFlavoured {
         MENUS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
+        INGREDIENT_TYPES.register(modEventBus);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(new HealthHandler());
     }
 
